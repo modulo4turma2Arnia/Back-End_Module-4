@@ -15,7 +15,6 @@ export class UserRegisterDto {
   @Length(0, 64)
   LastName: string;
 
-
   // @IsEmail() valida se o valor a propriedade é um e-mail válido.
   @IsEmail()
   //  @IsNotEmpty() garante que a propriedade não seja vazia.

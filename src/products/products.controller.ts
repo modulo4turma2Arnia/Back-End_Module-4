@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param,Query, Delete,UseGuards,UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+  Delete,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -13,30 +25,26 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
     @UploadedFile() file: FileDTO,
-    @Body() createProductDto: CreateProductDto) {
+    @Body() createProductDto: CreateProductDto,
+  ) {
     return this.productsService.Create_Product(createProductDto, file);
   }
 
-
-  
   @UseGuards(AuthGuard, RolesGuards)
   @Get()
   findAll(
-
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('name') name?: string,
     @Query('price') price?: number,
-
   ) {
-    return this.productsService.findAll(page, limit, name,price);
+    return this.productsService.findAll(page, limit, name, price);
   }
 
   @Get(':id')

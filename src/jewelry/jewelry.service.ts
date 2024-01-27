@@ -31,26 +31,20 @@ export class JewelryService {
   ) {}
 
   async CreateJewelry(createJewelryDto: CreateJewelryDto, photo: FileDTO) {
-    console.log('Objeto chegado', createJewelryDto, photo);
     let ImageURL: string | null = null;
 
     try {
-      // Se imagem existir e não for uma imagem
-      if (photo && !photo.mimetype.startsWith('image/')) {
-        throw new UnsupportedMediaTypeException(
+    // Se não houver imagem ou se mais de uma imagem for enviada
+    if (!photo || (Array.isArray(photo) && photo.length > 1)) {
+      throw new BadRequestException('Please provide exactly one image.');
+  }
+
+  // Se imagem existir e não for uma imagem
+  if (photo && !photo.mimetype.startsWith('image/')) {
+      throw new UnsupportedMediaTypeException(
           'Only image files are allowed.',
-        );
-      }
-
-      if (photo) {
-        const [extension] = photo.originalname.split('.');
-        const formattedFilename = `${Date.now()}.${extension}`;
-
-        const storageRef = ref(storage, formattedFilename);
-        await uploadBytesResumable(storageRef, photo.buffer);
-        ImageURL = await getDownloadURL(storageRef);
-      }
-
+      )
+  }
       const JewelryPayload = {
         ...createJewelryDto,
         image: ImageURL,

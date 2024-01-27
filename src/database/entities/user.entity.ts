@@ -12,7 +12,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { BadRequestException } from '@nestjs/common';
 import { RoleEnum } from '../../enums/role.enum';
-import { ProductEntity } from './product.intity';
+import { ProductEntity } from './product.entity';
 import { JewelryEntity } from './jewelry.entity';
 
 @Entity('Users')
@@ -32,30 +32,27 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 256, nullable: true })
   profileImage: string;
 
-
-  @Column({ type: 'boolean', nullable: true, select: false })
-  tutorial: boolean;
-
-
   @Column({ type: 'varchar', length: 64, nullable: false, select: false })
   password: string;
 
-  @Column({ type: 'enum', enum: RoleEnum, nullable: false, default: RoleEnum.customer })
+  @Column({
+    type: 'enum',
+    enum: RoleEnum,
+    nullable: false,
+    default: RoleEnum.customer,
+  })
   role: RoleEnum;
 
-  
   @Column({ type: 'int', default: 0 })
   credits: number;
 
-
-  @ManyToMany(() => ProductEntity, (product) => product.users, { cascade: true })
+  @ManyToMany(() => ProductEntity, (product) => product.users)
   @JoinTable()
   products: ProductEntity[];
-  
-  @ManyToMany(() => JewelryEntity, (jewelry) => jewelry.users, { cascade: true })
+
+  @ManyToMany(() => JewelryEntity, (jewelry) => jewelry.users)
   @JoinTable()
   jewelries: JewelryEntity[];
-  
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
