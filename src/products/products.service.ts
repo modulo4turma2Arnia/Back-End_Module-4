@@ -31,6 +31,11 @@ export class ProductsService {
     let ImageURL: string | null = null;
 
     try {
+      // Se não houver imagem ou se mais de uma imagem for enviada
+      if (!photo || (Array.isArray(photo) && photo.length > 1)) {
+        throw new BadRequestException('Please provide exactly one image.');
+      }
+
       // Se imagem existir e não for uma imagem
       if (photo && !photo.mimetype.startsWith('image/')) {
         throw new UnsupportedMediaTypeException(
@@ -38,6 +43,7 @@ export class ProductsService {
         );
       }
 
+        // Caso exista o arquivo de foto
       if (photo) {
         const [extension] = photo.originalname.split('.');
         const formattedFilename = `${Date.now()}.${extension}`;
