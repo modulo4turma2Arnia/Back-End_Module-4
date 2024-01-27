@@ -1,4 +1,15 @@
-import { Controller, Get, Post, UseInterceptors, Body, Patch, Param, Delete, UseGuards, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  UseInterceptors,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UploadedFile,
+} from '@nestjs/common';
 import { JewelryService } from './jewelry.service';
 import { CreateJewelryDto } from './dto/create-jewelry.dto';
 import { UpdateJewelryDto } from './dto/update-jewelry.dto';
@@ -9,11 +20,9 @@ import { RoleEnum } from 'src/enums/role.enum';
 import { FileDTO } from 'src/auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-
 @Controller('jewelry')
 export class JewelryController {
   constructor(private readonly jewelryService: JewelryService) {}
-
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
@@ -21,10 +30,10 @@ export class JewelryController {
   @UseInterceptors(FileInterceptor('image'))
   create(
     @UploadedFile() file: FileDTO,
-    @Body() createJewelryDto: CreateJewelryDto) {
-    return this.jewelryService.CreateJewelry(createJewelryDto, file);
+    @Body() createJewelryDto: CreateJewelryDto,
+  ) {
+    return this.jewelryService.Create_Jewelry(createJewelryDto, file);
   }
-
 
   @UseGuards(AuthGuard, RolesGuards)
   @Get()
@@ -32,21 +41,21 @@ export class JewelryController {
     return this.jewelryService.FindAllJewelry();
   }
 
-
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
-  @Post(':userId/:jewelryId')  
-  GiveJewelry(@Param('userId') userId: string, @Param('jewelryId') jewelryId: string) {
+  @Post(':userId/:jewelryId')
+  GiveJewelry(
+    @Param('userId') userId: string,
+    @Param('jewelryId') jewelryId: string,
+  ) {
     return this.jewelryService.GiveJewelryToUser(+userId, +jewelryId);
   }
-
 
   @UseGuards(AuthGuard, RolesGuards)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.jewelryService.findOne(+id);
   }
-
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)

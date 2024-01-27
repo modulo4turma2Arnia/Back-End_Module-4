@@ -12,19 +12,19 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // const swaggerConfig = new DocumentBuilder()
-  //   .setTitle('Culture Power')
+  //   .setTitle('Edusync Hub')
   //   .setDescription(
-  //     'Project made for Linkcom Group.',
+  //     'Project made for students search for subjects and subscribe.',
   //   )
   //   .setVersion('0.1')
   //   .build();
   // const document = SwaggerModule.createDocument(app, swaggerConfig);
-  // SwaggerModule.setup('prefixo/docs', app, document);
+  // SwaggerModule.setup('v1/docs', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
 
-  // Verificar com professores se é obrigatório user prefixo
-  // app.setGlobalPrefix('');
+  // Verificar com professores se é obrigatório
+  // app.setGlobalPrefix('v1/');
   app.enableCors();
   await app.listen(+configService.get('APP_PORT') || 3000);
 }
