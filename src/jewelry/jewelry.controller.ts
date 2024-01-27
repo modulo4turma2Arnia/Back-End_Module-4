@@ -32,7 +32,7 @@ export class JewelryController {
     @UploadedFile() file: FileDTO,
     @Body() createJewelryDto: CreateJewelryDto,
   ) {
-    return this.jewelryService.Create_Jewelry(createJewelryDto, file);
+    return this.jewelryService.CreateJewelry(createJewelryDto, file);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
