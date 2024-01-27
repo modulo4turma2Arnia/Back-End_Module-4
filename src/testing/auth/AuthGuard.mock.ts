@@ -12,6 +12,6 @@ export const authGuardMock: CanActivate = {
     request['user'] = { id: 2, role: RoleEnum.customer };
 
     // Retorna true para indicar que a autenticação foi bem-sucedida
-    return true;
+    return true;  
   }),
 }
