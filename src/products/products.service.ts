@@ -91,13 +91,14 @@ export class ProductsService {
 
     // Adiciona condições opcionais se os parâmetros estiverem presentes
     if (name) {
-      // Usa ILIKE para pesquisa case-insensitive
+      // Usa ILIKE pra pesquisa case-insensitive (tanto maiusculas quanto minusculas)
       queryBuilder = queryBuilder.andWhere('product.name ILIKE :name', {
         name: `%${name}%`,
       });
     }
 
     if (price) {
+      // a pesquisa deve ser feita com valores proximos tambem? perguntar o luiz
       // Utiliza operadores >= e <= para buscar valores próximos
       const tolerance = 5; // Ajuste conforme necessário
       queryBuilder = queryBuilder
@@ -107,7 +108,7 @@ export class ProductsService {
         });
     }
 
-    // Aplica a paginação e retorna os resultados
+    // Aplicando a paginação com os filtros recebidos e retorna os resultados
     const results = await queryBuilder.skip(skip).take(limit).getMany();
 
     return results;
@@ -121,11 +122,11 @@ export class ProductsService {
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     try {
-      const Verify_Product = await this.ProductRepository.findOne({
+      const VerifyProduct = await this.ProductRepository.findOne({
         where: { id },
       });
 
-      if (!Verify_Product) {
+      if (!VerifyProduct) {
         throw new NotFoundException(`Product with ID ${id} not found`);
       }
 
