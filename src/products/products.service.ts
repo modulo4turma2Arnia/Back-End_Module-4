@@ -43,6 +43,7 @@ export class ProductsService {
         );
       }
 
+        // Caso exista o arquivo de foto
       if (photo) {
         const [extension] = photo.originalname.split('.');
         const formattedFilename = `${Date.now()}.${extension}`;
