@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 
-
 @Entity('Products')
 export class ProductEntity {
   @PrimaryGeneratedColumn()
