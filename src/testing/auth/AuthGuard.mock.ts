@@ -10,4 +10,5 @@ export const authGuardMock: CanActivate = {
 
     return true;
   }),
-};
+}
+
