@@ -10,7 +10,7 @@ export const authGuardMock: CanActivate = {
 
     // Simula a adição de um objeto de usuário ao objeto de requisição
     // Neste exemplo, o usuário tem um ID de 1 e na role ele é  adm
-    request['user'] = { id: 3, role: RoleEnum.admin };
+    request['user'] = { id: 8, role: RoleEnum.admin };
 
     // Retorna true para indicar que a autenticação foi bem-sucedida
     return true;
