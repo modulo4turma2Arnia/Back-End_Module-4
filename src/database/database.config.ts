@@ -29,7 +29,7 @@ export default <TypeOrmModuleAsyncOptions>{
         
         // Obtém as informações de host, porta, usuário, senha e nome do banco de dados a partir das variáveis de ambiente.
         host: configService.get('DB_HOST'),
-        port: +configService.get('PORT'),
+        port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
