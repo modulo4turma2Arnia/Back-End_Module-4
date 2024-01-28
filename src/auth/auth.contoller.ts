@@ -34,7 +34,6 @@ import {
     @HttpCode(200)
     @Post()
     async login(@Body() PayLoad: LoginDTO) {
-      console.log("data na controller", PayLoad)
       return await this.authService.LoginAuthService(PayLoad);
     }
   } 
