@@ -12,9 +12,9 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // const swaggerConfig = new DocumentBuilder()
-  //   .setTitle('Edusync Hub')
+  //   .setTitle('Culture Power')
   //   .setDescription(
-  //     'Project made for students search for subjects and subscribe.',
+  //     'Project created for the last module of the course.',
   //   )
   //   .setVersion('0.1')
   //   .build();
@@ -24,7 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   // Verificar com professores se é obrigatório
-  // app.setGlobalPrefix('v1/');
+  app.setGlobalPrefix('v1/');
   app.enableCors();
   await app.listen(+configService.get('PORT') || 3000);
 }
