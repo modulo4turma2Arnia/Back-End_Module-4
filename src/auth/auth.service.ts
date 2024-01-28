@@ -91,7 +91,7 @@ const storage = getStorage(appFireBase);
         const { email, password } = PayLoad;
           // lembrar que true é pra que as propriedades sejam includias no retorno da consulta
 
-        const Verify_User = await this.usersRepository.findOne({
+        const VerifyUser = await this.usersRepository.findOne({
           where: { email },
           select: {
             id: true,
@@ -101,13 +101,13 @@ const storage = getStorage(appFireBase);
           },
         });
   
-        if (!Verify_User) {
+        if (!VerifyUser) {
           throw new UnauthorizedException('wrong email or password.');
         }
   
         const Verify_password = await bcrypt.compare(
           password,
-          Verify_User.password,
+          VerifyUser.password,
         );
   
         if (!Verify_password) {
@@ -115,10 +115,10 @@ const storage = getStorage(appFireBase);
         }
   
         const Token = {
-          id: Verify_User.id,
-          email: Verify_User.email,
-          role: Verify_User.role,
-        };
+          id: VerifyUser.id,
+          email: VerifyUser.email,
+          role: VerifyUser.role,
+        }
   
         return {
           token: await this.jwtService.signAsync(Token),
