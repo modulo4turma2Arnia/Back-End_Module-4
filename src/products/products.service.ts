@@ -4,11 +4,12 @@ import {
   NotFoundException,
   HttpException,
   UnsupportedMediaTypeException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { FileDTO } from 'src/auth/dto/files.dto';
-import { appFireBase } from 'src/firebase/firebase.config';
+import { FileDTO } from '../auth/dto/files.dto';
+import { appFireBase } from '../firebase/firebase.config';
 import {
   getStorage,
   ref,
@@ -16,7 +17,7 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from 'src/database/entities';
+import { ProductEntity } from '../database/entities/index';
 import { Repository } from 'typeorm';
 const storage = getStorage(appFireBase);
 
@@ -27,10 +28,20 @@ export class ProductsService {
     private ProductRepository: Repository<ProductEntity>,
   ) {}
 
-  async Create_Product(createProductDto: CreateProductDto, photo: FileDTO) {
+  async Create_Product(createProductPayload: CreateProductDto, photo: FileDTO) {
     let ImageURL: string | null = null;
-
+    const { name } = createProductPayload
     try {
+      if (
+        await this.ProductRepository.exists({
+          where: { name: createProductPayload.name },
+        })
+      ) {
+        throw new BadRequestException(
+          'There is already a product with this name.',
+        );
+      }
+
       // Se não houver imagem ou se mais de uma imagem for enviada
       if (!photo || (Array.isArray(photo) && photo.length > 1)) {
         throw new BadRequestException('Please provide exactly one image.');
@@ -54,27 +65,16 @@ export class ProductsService {
       }
 
       const ProductPayload = {
-        ...createProductDto,
+        ...createProductPayload,
         image: ImageURL,
-      };
-
-      if (
-        await this.ProductRepository.exists({
-          where: { name: createProductDto.name },
-        })
-      ) {
-        throw new BadRequestException(
-          'There is already a product with this name.',
-        );
       }
+
 
       const New_Product = this.ProductRepository.create(ProductPayload);
       await this.ProductRepository.save(New_Product);
 
       return New_Product;
     } catch (error) {
-      console.log('Erro =>', error);
-
       throw new HttpException(error.message, error.status);
     }
   }
@@ -86,6 +86,9 @@ export class ProductsService {
     price: number,
   ) {
     const skip = (page - 1) * limit;
+
+    console.log('skip', skip)
+    console.log('limit', limit)
 
     let queryBuilder = this.ProductRepository.createQueryBuilder('product');
 
@@ -110,7 +113,6 @@ export class ProductsService {
 
     // Aplicando a paginação com os filtros recebidos e retorna os resultados
     const results = await queryBuilder.skip(skip).take(limit).getMany();
-
     return results;
   }
 
