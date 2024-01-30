@@ -28,7 +28,7 @@ export class ProductsService {
     private ProductRepository: Repository<ProductEntity>,
   ) {}
 
-  async Create_Product(createProductPayload: CreateProductDto, photo: FileDTO) {
+  async CreateProduct(createProductPayload: CreateProductDto, photo: FileDTO) {
     let ImageURL: string | null = null;
     const { name } = createProductPayload
     try {
@@ -43,7 +43,7 @@ export class ProductsService {
       }
 
       // Se não houver imagem ou se mais de uma imagem for enviada
-      if (!photo || (Array.isArray(photo) && photo.length > 1)) {
+      if (!photo) {
         throw new BadRequestException('Please provide exactly one image.');
       }
 
@@ -79,16 +79,13 @@ export class ProductsService {
     }
   }
 
-  async findAll(
+  async FindAll(
     page: number = 1,
     limit: number = 5,
     name: string,
     price: number,
   ) {
     const skip = (page - 1) * limit;
-
-    console.log('skip', skip)
-    console.log('limit', limit)
 
     let queryBuilder = this.ProductRepository.createQueryBuilder('product');
 

@@ -10,7 +10,7 @@ export const GetFilesMock = async () => {
   const photo = {
     fieldname: 'photo-fieldname',
     originalname: 'profile.jpg',
-    mimetype: 'Content-Type',
+    mimetype: 'image/jpeg',
     size: 1000,
     stream,
     buffer,
