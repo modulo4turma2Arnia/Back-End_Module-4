@@ -79,12 +79,7 @@ export class ProductsService {
     }
   }
 
-  async FindAll(
-    page: number = 1,
-    limit: number = 5,
-    name: string,
-    price: number,
-  ) {
+  async FindAll( page: number = 1, limit: number = 5, name: string, price: number) {
     const skip = (page - 1) * limit;
 
     let queryBuilder = this.ProductRepository.createQueryBuilder('product');
@@ -118,13 +113,13 @@ export class ProductsService {
     });
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto) {
+  async UpdateProduct(id: number, updateProductDto: UpdateProductDto) {
     try {
-      const Verify_Product = await this.ProductRepository.findOne({
+      const VerifyProduct = await this.ProductRepository.findOne({
         where: { id },
       });
 
-      if (!Verify_Product) {
+      if (!VerifyProduct) {
         throw new NotFoundException(`Product with ID ${id} not found`);
       }
 
@@ -137,19 +132,18 @@ export class ProductsService {
       });
 
       return updatedProduct;
-    } catch (error) {
-      console.error(error);
+    }catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
-  async Remove_Product(id: number) {
+  async RemoveProduct(id: number) {
     try {
-      const Verify_Product = await this.ProductRepository.findOne({
+      const VerifyProduct = await this.ProductRepository.findOne({
         where: { id },
       });
 
-      if (Verify_Product) {
+      if (VerifyProduct) {
         // 2 tipos, softdelete e softremove , achei o softDelete melhor
         await this.ProductRepository.softDelete(id);
         return { result: `Product with id ${id} has been remove.` };
