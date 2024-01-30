@@ -33,7 +33,7 @@ export class ProductsController {
     @UploadedFile() file: FileDTO,
     @Body() createProductDto: CreateProductDto,
   ) {
-    return this.productsService.Create_Product(createProductDto, file);
+    return this.productsService.CreateProduct(createProductDto, file);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
@@ -44,7 +44,7 @@ export class ProductsController {
     @Query('name') name?: string,
     @Query('price') price?: number,
   ) {
-    return this.productsService.findAll(page, limit, name, price);
+    return this.productsService.FindAll(page, limit, name, price);
   }
 
   @Get(':id')

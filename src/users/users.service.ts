@@ -97,6 +97,7 @@ export class UsersService {
 
     return user;
   }
+  
   async changePassword(changePasswordDto: ChangePasswordDto, user: UserEntity) {
     const { currentPassword, newPassword } = changePasswordDto;
 
