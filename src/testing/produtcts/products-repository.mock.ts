@@ -9,15 +9,18 @@ export const ProductsRepositoryMock = {
     exists: jest.fn(),
     create: jest.fn(() => ListProductsMock[3]),
     save: jest.fn(),
+    update: jest.fn(),
+    findOne: jest.fn(() => ListProductsMock[0]),
     createQueryBuilder: jest.fn(() => ({
-      where: jest.fn(),
-      andWhere: jest.fn(),
-      skip: jest.fn(),
-      take: jest.fn().mockReturnValue(5), // Valor padrão para o método take
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
       getMany: jest.fn().mockResolvedValue(ListProductsMock),
     })),
   },
 };
+
 
   
   
