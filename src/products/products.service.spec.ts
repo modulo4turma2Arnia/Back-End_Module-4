@@ -110,15 +110,17 @@ describe('ProductsService', () => {
     })
 
     it("Should throw an exception if a product with the sent id is not found", async () => {
-      // Arrange
+      
       jest.spyOn(ProductsRepositoryMock.useValue, 'findOne').mockResolvedValue(null as never);
     
-      // Act
+      
       const updatePromise = service.UpdateProduct(ListProductsMock[0].id, UpdateProductMock);
     
-      // Assert
-      await expect(updatePromise).rejects.toThrow(HttpException);
-    });
+      
+      //await expect(updatePromise).rejects.toThrow(HttpException);
+      await expect(updatePromise).rejects.toThrow(new HttpException('Product with ID 1 not found', HttpStatus.NOT_FOUND));
+
+    })
     
 
 

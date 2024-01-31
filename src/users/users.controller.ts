@@ -26,7 +26,6 @@ export class UsersController {
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Get('infouser')
   InfoUser(@CurrentUser() currentUser: UserEntity) {
-    console.log('usuario na controler ', currentUser);
     return this.usersService.GetInfoUsers(+currentUser.id);
   }
 
@@ -48,14 +47,13 @@ export class UsersController {
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.Update_User(+id, updateUserDto);
+    return this.usersService.UpdateUser(+id, updateUserDto);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    console.log('id chegado na delete', id);
     return this.usersService.Remove_User(+id);
   }
 
@@ -69,13 +67,12 @@ export class UsersController {
     return this.usersService.RescueProduct(+productId, currentUser);
   }
 
+
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
-  @Patch('change-password')
-  async changePassword(
-    @Body() changePasswordDto: ChangePasswordDto,
-    @CurrentUser() currentUser: UserEntity,
-  ) {
-    return this.usersService.changePassword(changePasswordDto, currentUser);
+  @Patch('password/:id')
+  changePassword(@Body() changePasswordDto: any) {
+    return this.usersService.changePassword(changePasswordDto);
   }
+
 }
