@@ -39,7 +39,7 @@ export class UsersService {
     });
   }
 
-  async Update_User(id: number, updateUserDto: UpdateUserDto) {
+  async UpdateUser(id: number, updateUserDto: UpdateUserDto) {
     try {
       const existingUser = await this.UserRepository.findOne({ where: { id } });
 
@@ -98,26 +98,28 @@ export class UsersService {
     return user;
   }
   
-  async changePassword(changePasswordDto: ChangePasswordDto, user: UserEntity) {
-    const { currentPassword, newPassword } = changePasswordDto;
+  async changePassword(changePasswordDto: any) {
+    //const { currentPassword, newPassword } = changePasswordDto;
 
-    const isCurrentPasswordValid = await bcrypt.compare(
-      currentPassword,
-      user.password,
-    );
-    if (!isCurrentPasswordValid) {
-      throw new UnauthorizedException('Current password is incorrect.');
-    }
+    console.log('chegou aqui nova senha', changePasswordDto)
+   // console.log('password na service =>', changePasswordDto)
+  //   const isCurrentPasswordValid = await bcrypt.compare(
+  //     currentPassword,
+  //     user.password,
+  //   );
+  //   if (!isCurrentPasswordValid) {
+  //     throw new UnauthorizedException('Current password is incorrect.');
+  //   }
 
-    if (currentPassword === newPassword) {
-      throw new BadRequestException(
-        'New password cannot be the same as the current password.',
-      );
-    }
+  //   if (currentPassword === newPassword) {
+  //     throw new BadRequestException(
+  //       'New password cannot be the same as the current password.',
+  //     );
+  //   }
 
-    user.password = await bcrypt.hash(newPassword, 10);
-    await this.UserRepository.save(user);
+  //   user.password = await bcrypt.hash(newPassword, 10);
+  //   await this.UserRepository.save(user);
 
-    return { message: 'Password changed successfully.' };
+  //   return { message: 'Password changed successfully.' };
   }
 }
