@@ -6,18 +6,16 @@ import { ConfigModule } from '@nestjs/config';
 import { JewelryModule } from './jewelry/jewelry.module';
 import { AuthModule } from './auth/auth.module';
 
-
-
 @Module({
-  imports: [DatabaseModule,UsersModule,
+  imports: [
+    DatabaseModule,
+    UsersModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ProductsModule,
     AuthModule,
-    JewelryModule],
+    JewelryModule,
+  ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
-
-
-

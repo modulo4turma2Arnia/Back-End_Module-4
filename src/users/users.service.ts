@@ -3,7 +3,6 @@ import {
   NotFoundException,
   HttpException,
   BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -97,27 +96,51 @@ export class UsersService {
 
     return user;
   }
-  
-  async changePassword(changePasswordDto: ChangePasswordDto, user: UserEntity) {
-    const { currentPassword, newPassword } = changePasswordDto;
 
-    const isCurrentPasswordValid = await bcrypt.compare(
-      currentPassword,
-      user.password,
-    );
-    if (!isCurrentPasswordValid) {
-      throw new UnauthorizedException('Current password is incorrect.');
-    }
+  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+    try {
+      const user = await this.UserRepository.findOne({
+        where: { id: userId },
+        select: ['id', 'password'],
+      });
 
-    if (currentPassword === newPassword) {
-      throw new BadRequestException(
-        'New password cannot be the same as the current password.',
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+
+      const isCurrentPasswordValid = await bcrypt.compare(
+        changePasswordDto.currentPassword,
+        user.password,
       );
+      console.log('password aqui', isCurrentPasswordValid);
+
+      if (!isCurrentPasswordValid) {
+        throw new HttpException('Current password is incorrect', 400);
+      }
+
+      const isNewPasswordSameAsCurrent = await bcrypt.compare(
+        changePasswordDto.newPassword,
+        user.password,
+      );
+
+      if (isNewPasswordSameAsCurrent) {
+        throw new HttpException(
+          'New password must be different from the current password',
+          400,
+        );
+      }
+
+      const hashedNewPassword = await bcrypt.hash(
+        changePasswordDto.newPassword,
+        10,
+      );
+
+      user.password = hashedNewPassword;
+
+      await this.UserRepository.save(user);
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(error.message, error.status);
     }
-
-    user.password = await bcrypt.hash(newPassword, 10);
-    await this.UserRepository.save(user);
-
-    return { message: 'Password changed successfully.' };
   }
 }

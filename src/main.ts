@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+//import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 
@@ -26,6 +26,6 @@ async function bootstrap() {
   // Verificar com professores se é obrigatório
   app.setGlobalPrefix('v1/');
   app.enableCors();
-  await app.listen(+configService.get('PORT') || 3000);
+  await app.listen(+configService.get('APP_PORT') || 3000);
 }
 bootstrap();
