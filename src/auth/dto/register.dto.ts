@@ -1,4 +1,11 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Length,IsOptional  } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  Length,
+  IsOptional,
+} from 'class-validator';
 
 import { RoleEnum } from 'src/enums/role.enum';
 
@@ -33,6 +40,6 @@ export class UserRegisterDto {
 
   //  @IsEnum(RoleEnum) valida se o valor atribuído à propriedade é um dos que existem em  RoleEnum.
   @IsEnum(RoleEnum)
-  @IsOptional() 
+  @IsOptional()
   role: RoleEnum;
 }
