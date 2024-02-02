@@ -75,28 +75,6 @@ export class UsersService {
     }
   }
 
-  // async RescueProduct(productId: number, user: UserEntity) {
-  //   const product = await this.productRepository.findOne({
-  //     where: { id: productId },
-  //   });
-  //   if (!product) {
-  //     throw new NotFoundException(`Product with ID ${productId} not found`);
-  //   }
-
-  //   if (user.credits < product.price) {
-  //     throw new BadRequestException(
-  //       'Not enough credits to rescue this product',
-  //     );
-  //   }
-
-  //   user.credits -= product.price;
-  //   user.products = [...user.products, product];
-
-  //   await this.UserRepository.save(user);
-
-  //   return user;
-  // }
-
   async RescueProduct(productId: number, user: UserEntity) {
     const product = await this.productRepository.findOne({
       where: { id: productId },
