@@ -120,7 +120,6 @@ export class UsersService {
         changePasswordDto.currentPassword,
         user.password,
       );
-      console.log('password aqui', isCurrentPasswordValid);
 
       if (!isCurrentPasswordValid) {
         throw new HttpException('Current password is incorrect', 400);
