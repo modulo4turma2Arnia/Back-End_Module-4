@@ -110,7 +110,7 @@ export class UsersService {
       const user = await this.UserRepository.findOne({
         where: { id: userId },
         select: ['id', 'password'],
-      });
+      })
 
       if (!user) {
         throw new NotFoundException(`User with ID ${userId} not found`);
@@ -145,7 +145,9 @@ export class UsersService {
 
       user.password = hashedNewPassword;
 
+
       await this.UserRepository.save(user);
+      return {Result: 'User Password changed succefully'}
     } catch (error) {
       console.error(error);
       throw new HttpException(error.message, error.status);
