@@ -76,33 +76,28 @@ export class UsersService {
   }
 
   async RescueProduct(productId: number, user: UserEntity) {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-    });
+    try {
+      //console.log('Received productId:', productId);
 
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+      // Verifica se productId é um número válido
+      if (isNaN(productId) || productId <= 0) {
+        // console.log('Invalid productId detected.');
+        throw new BadRequestException('Invalid productId');
+      }
+
+      //console.log('Finding product by ID:', productId);
+
+      // Encontrar o produto pelo ID
+      const product = await this.productRepository.findOneOrFail({
+        where: { id: productId },
+      });
+
+      //console.log('Product rescue successful:', product);
+
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
     }
-
-    if (
-      isNaN(product.price) ||
-      isNaN(user.credits) ||
-      user.credits < product.price
-    ) {
-      throw new BadRequestException(
-        'Not enough credits to rescue this product',
-      );
-    }
-
-    user.products = user.products || [];
-
-    user.products.push(product);
-
-    user.credits -= product.price;
-
-    await this.UserRepository.save(user);
-
-    return user;
   }
 
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
@@ -120,7 +115,6 @@ export class UsersService {
         changePasswordDto.currentPassword,
         user.password,
       );
-      console.log('password aqui', isCurrentPasswordValid);
 
       if (!isCurrentPasswordValid) {
         throw new HttpException('Current password is incorrect', 400);
@@ -146,6 +140,7 @@ export class UsersService {
       user.password = hashedNewPassword;
 
       await this.UserRepository.save(user);
+      return { Result: 'User Password changed succefully' };
     } catch (error) {
       console.error(error);
       throw new HttpException(error.message, error.status);
