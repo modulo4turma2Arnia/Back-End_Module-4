@@ -100,7 +100,7 @@ export class UsersService {
     }
   }
 
-  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+  async ChangePassword(userId: number, changePasswordDto: ChangePasswordDto) {
     try {
       const user = await this.UserRepository.findOne({
         where: { id: userId },

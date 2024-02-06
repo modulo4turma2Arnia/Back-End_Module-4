@@ -74,6 +74,6 @@ export class UsersController {
     @Body() changePasswordDto: ChangePasswordDto,
     @CurrentUser() currentUser: UserEntity,
   ) {
-    return this.usersService.changePassword(currentUser.id, changePasswordDto);
+    return this.usersService.ChangePassword(currentUser.id, changePasswordDto);
   }
 }
