@@ -69,9 +69,8 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
-  @Patch('chpassword/:id') // Correção na rota, adicionando o ':'
+  @Patch('ch/password') // Correção na rota, adicionando o ':'
   async updatePassword(
-    @Param('id') userId: string,
     @Body() changePasswordDto: ChangePasswordDto,
     @CurrentUser() currentUser: UserEntity,
   ) {
