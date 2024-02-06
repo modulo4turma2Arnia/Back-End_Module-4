@@ -46,16 +46,15 @@ export class ProductsService {
       if (!photo) {
         throw new BadRequestException('Please provide exactly one image.');
       }
-
-      // Se imagem existir e não for uma imagem
-      if (photo && !photo.mimetype.startsWith('image/')) {
-        throw new UnsupportedMediaTypeException(
-          'Only image files are allowed.',
-        );
-      }
-
-        // Caso exista o arquivo de foto
+      // Caso exista o arquivo de foto
       if (photo) {
+        // Se imagem existir e não for uma imagem
+        if (photo && !photo.mimetype.startsWith('image/')) {
+          throw new UnsupportedMediaTypeException(
+            'Only image files are allowed.',
+          );
+        }
+
         const [extension] = photo.originalname.split('.');
         const formattedFilename = `${Date.now()}.${extension}`;
 
@@ -64,16 +63,15 @@ export class ProductsService {
         ImageURL = await getDownloadURL(storageRef);
       }
 
-      const ProductPayload = {
+  
+      if (ImageURL != null) {
+        const New_Product = this.ProductRepository.create({
         ...createProductPayload,
         image: ImageURL,
-      }
-
-
-      const New_Product = this.ProductRepository.create(ProductPayload);
+      })
       await this.ProductRepository.save(New_Product);
-
-      return New_Product;
+      return New_Product
+    }
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

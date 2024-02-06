@@ -39,16 +39,22 @@ export class JewelryService {
         throw new BadRequestException('Please provide exactly one image.');
       }
 
-      // Se imagem existir e não for uma imagem
-      if (photo && !photo.mimetype.startsWith('image/')) {
-        throw new UnsupportedMediaTypeException(
-          'Only image files are allowed.',
-        );
+      // Caso exista o arquivo de foto
+      if (photo) {
+        // Se imagem existir e não for uma imagem
+        if (photo && !photo.mimetype.startsWith('image/')) {
+          throw new UnsupportedMediaTypeException(
+            'Only image files are allowed.',
+          );
+        }
+
+        const [extension] = photo.originalname.split('.');
+        const formattedFilename = `${Date.now()}.${extension}`;
+
+        const storageRef = ref(storage, formattedFilename);
+        await uploadBytesResumable(storageRef, photo.buffer);
+        ImageURL = await getDownloadURL(storageRef);
       }
-      const JewelryPayload = {
-        ...createJewelryDto,
-        image: ImageURL,
-      };
 
       if (
         await this.JewelryRepository.exists({
@@ -57,16 +63,18 @@ export class JewelryService {
       ) {
         throw new BadRequestException(
           'There is already a jewelry with this name.',
-        );
+        )
       }
 
-      const New_Jewelry = this.JewelryRepository.create(JewelryPayload);
-      await this.JewelryRepository.save(New_Jewelry);
-
-      return New_Jewelry;
+      if (ImageURL != null) {
+        const New_Jewelry = this.JewelryRepository.create({
+          ...createJewelryDto,
+          image: ImageURL,
+        });
+        await this.JewelryRepository.save(New_Jewelry);
+        return New_Jewelry;
+      }
     } catch (error) {
-      console.log('Erro =>', error);
-
       throw new HttpException(error.message, error.status);
     }
   }
