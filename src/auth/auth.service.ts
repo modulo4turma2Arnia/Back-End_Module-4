@@ -50,7 +50,7 @@ export class AuthService {
     const UserPayload = {
       ...PayLoad,
       profileImage: ImageURL,
-    }
+    };
 
     try {
       if (
@@ -112,7 +112,6 @@ export class AuthService {
         token: await this.jwtService.signAsync(Token),
       };
     } catch (error) {
- 
       throw new HttpException(error.message, error.status);
     }
   }

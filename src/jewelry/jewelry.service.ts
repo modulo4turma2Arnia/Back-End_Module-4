@@ -34,21 +34,27 @@ export class JewelryService {
     let ImageURL: string | null = null;
 
     try {
-    // Se não houver imagem ou se mais de uma imagem for enviada
-    if (!photo || (Array.isArray(photo) && photo.length > 1)) {
-      throw new BadRequestException('Please provide exactly one image.');
-  }
+      // Se não houver imagem ou se mais de uma imagem for enviada
+      if (!photo || (Array.isArray(photo) && photo.length > 1)) {
+        throw new BadRequestException('Please provide exactly one image.');
+      }
 
-  // Se imagem existir e não for uma imagem
-  if (photo && !photo.mimetype.startsWith('image/')) {
-      throw new UnsupportedMediaTypeException(
-          'Only image files are allowed.',
-      )
-  }
-      const JewelryPayload = {
-        ...createJewelryDto,
-        image: ImageURL,
-      };
+      // Caso exista o arquivo de foto
+      if (photo) {
+        // Se imagem existir e não for uma imagem
+        if (photo && !photo.mimetype.startsWith('image/')) {
+          throw new UnsupportedMediaTypeException(
+            'Only image files are allowed.',
+          );
+        }
+
+        const [extension] = photo.originalname.split('.');
+        const formattedFilename = `${Date.now()}.${extension}`;
+
+        const storageRef = ref(storage, formattedFilename);
+        await uploadBytesResumable(storageRef, photo.buffer);
+        ImageURL = await getDownloadURL(storageRef);
+      }
 
       if (
         await this.JewelryRepository.exists({
@@ -57,16 +63,18 @@ export class JewelryService {
       ) {
         throw new BadRequestException(
           'There is already a jewelry with this name.',
-        );
+        )
       }
 
-      const New_Jewelry = this.JewelryRepository.create(JewelryPayload);
-      await this.JewelryRepository.save(New_Jewelry);
-
-      return New_Jewelry;
+      if (ImageURL != null) {
+        const New_Jewelry = this.JewelryRepository.create({
+          ...createJewelryDto,
+          image: ImageURL,
+        });
+        await this.JewelryRepository.save(New_Jewelry);
+        return New_Jewelry;
+      }
     } catch (error) {
-      console.log('Erro =>', error);
-
       throw new HttpException(error.message, error.status);
     }
   }
@@ -83,28 +91,33 @@ export class JewelryService {
 
   async GiveJewelryToUser(userId: number, jewelryId: number) {
     try {
- // Buscar o usuário e a joia pelos IDs
-const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['jewelries'] });
-const jewelry = await this.JewelryRepository.findOne({ where: { id: jewelryId } });
+      // Buscar o usuário e a joia pelos IDs
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['jewelries'],
+      });
+      const jewelry = await this.JewelryRepository.findOne({
+        where: { id: jewelryId },
+      });
 
-console.log('user encontrada', user);
-console.log('joia encontrada', jewelry);
+      console.log('user encontrada', user);
+      console.log('joia encontrada', jewelry);
 
-if (!user || !jewelry) {
-  throw new NotFoundException('User or jewel not found.');
-}
+      if (!user || !jewelry) {
+        throw new NotFoundException('User or jewel not found.');
+      }
 
-// Verificar se user.jewelries é um array
-if (!Array.isArray(user.jewelries)) {
-  // Se não for um array (pode ser undefined), inicialize como uma array vazia
-  user.jewelries = [];
-}
+      // Verificar se user.jewelries é um array
+      if (!Array.isArray(user.jewelries)) {
+        // Se não for um array (pode ser undefined), inicialize como uma array vazia
+        user.jewelries = [];
+      }
 
-// Adicionar a nova joia ao array sem substituir as existentes
-user.jewelries.push(jewelry);
+      // Adicionar a nova joia ao array sem substituir as existentes
+      user.jewelries.push(jewelry);
 
-// Salvar as alterações no banco de dados
-await this.userRepository.save(user);
+      // Salvar as alterações no banco de dados
+      await this.userRepository.save(user);
 
       return {
         Sucess: `Jewel id ${jewelry.id} (${jewelry.type}) successfully assigned to the user`,

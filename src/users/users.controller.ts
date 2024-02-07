@@ -67,12 +67,14 @@ export class UsersController {
     return this.usersService.RescueProduct(+productId, currentUser);
   }
 
-
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
-  @Patch('password/:id')
-  changePassword(@Body() changePasswordDto: any) {
-    return this.usersService.changePassword(changePasswordDto);
+  @Patch('ch/password') // Correção na rota, adicionando o ':'
+  async updatePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @CurrentUser() currentUser: UserEntity,
+  ) {
+    return this.usersService.changePassword(currentUser.id, changePasswordDto);
   }
-
 }
+

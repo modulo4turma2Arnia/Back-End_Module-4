@@ -3,7 +3,6 @@ import {
   NotFoundException,
   HttpException,
   BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -77,49 +76,75 @@ export class UsersService {
   }
 
   async RescueProduct(productId: number, user: UserEntity) {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-    });
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
+    try {
+      //console.log('Received productId:', productId);
+
+      // Verifica se productId é um número válido
+      if (isNaN(productId) || productId <= 0) {
+        // console.log('Invalid productId detected.');
+        throw new BadRequestException('Invalid productId');
+      }
+
+      //console.log('Finding product by ID:', productId);
+
+      // Encontrar o produto pelo ID
+      const product = await this.productRepository.findOneOrFail({
+        where: { id: productId },
+      });
+
+      //console.log('Product rescue successful:', product);
+
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
     }
-
-    if (user.credits < product.price) {
-      throw new BadRequestException(
-        'Not enough credits to rescue this product',
-      );
-    }
-
-    user.credits -= product.price;
-    user.products = [...user.products, product];
-
-    await this.UserRepository.save(user);
-
-    return user;
   }
-  
-  async changePassword(changePasswordDto: any) {
-    //const { currentPassword, newPassword } = changePasswordDto;
 
-    console.log('chegou aqui nova senha', changePasswordDto)
-   // console.log('password na service =>', changePasswordDto)
-  //   const isCurrentPasswordValid = await bcrypt.compare(
-  //     currentPassword,
-  //     user.password,
-  //   );
-  //   if (!isCurrentPasswordValid) {
-  //     throw new UnauthorizedException('Current password is incorrect.');
-  //   }
+  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+    try {
+      const user = await this.UserRepository.findOne({
+        where: { id: userId },
+        select: ['id', 'password'],
+      })
 
-  //   if (currentPassword === newPassword) {
-  //     throw new BadRequestException(
-  //       'New password cannot be the same as the current password.',
-  //     );
-  //   }
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
 
-  //   user.password = await bcrypt.hash(newPassword, 10);
-  //   await this.UserRepository.save(user);
+      const isCurrentPasswordValid = await bcrypt.compare(
+        changePasswordDto.currentPassword,
+        user.password,
+      );
 
-  //   return { message: 'Password changed successfully.' };
+      if (!isCurrentPasswordValid) {
+        throw new HttpException('Current password is incorrect', 400);
+      }
+
+      const isNewPasswordSameAsCurrent = await bcrypt.compare(
+        changePasswordDto.newPassword,
+        user.password,
+      );
+
+      if (isNewPasswordSameAsCurrent) {
+        throw new HttpException(
+          'New password must be different from the current password',
+          400,
+        );
+      }
+
+      const hashedNewPassword = await bcrypt.hash(
+        changePasswordDto.newPassword,
+        10,
+      );
+
+      user.password = hashedNewPassword;
+
+
+      await this.UserRepository.save(user);
+      return { Result: 'User Password changed succefully' };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(error.message, error.status);
+    }
   }
 }
