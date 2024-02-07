@@ -63,7 +63,7 @@ export class JewelryService {
       ) {
         throw new BadRequestException(
           'There is already a jewelry with this name.',
-        )
+        );
       }
 
       if (ImageURL != null) {
@@ -96,32 +96,57 @@ export class JewelryService {
         where: { id: userId },
         relations: ['jewelries'],
       });
+
       const jewelry = await this.JewelryRepository.findOne({
         where: { id: jewelryId },
       });
-
-      console.log('user encontrada', user);
-      console.log('joia encontrada', jewelry);
-
       if (!user || !jewelry) {
         throw new NotFoundException('User or jewel not found.');
       }
 
-      // Verificar se user.jewelries é um array
-      if (!Array.isArray(user.jewelries)) {
-        // Se não for um array (pode ser undefined), inicialize como uma array vazia
-        user.jewelries = [];
+      if (user && jewelry) {
+        console.log('user creditos =>', user.credits);
+
+        //some é usado para verificar se pelo menos um item no
+        //array user.jewelries possui o mesmo tipo que a joia sendo
+        //enviada (jewelry.type). Se hasSameType for true, isso significa
+        //que o usuário já possui uma joia com o mesmo tipo;
+        const hasSameType = user.jewelries.some(
+          (item) => item.type === jewelry.type,
+        );
+
+        if (hasSameType) {
+          user.credits++;
+          await this.userRepository.save(user);
+
+          const UserApdated = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: ['jewelries'],
+          });
+
+          console.log('user atualziado', UserApdated);
+          return {
+            Sucess: `Credits successfully assigned to the user`,
+          }
+        } else {
+          user.credits++;
+          // Verificar se user.jewelries é um array
+          // if (!Array.isArray(user.jewelries)) {
+          //   // Se não for um array (pode ser undefined), inicialize como uma array vazia
+          //   user.jewelries = [];
+          // }
+
+          // Adicionar a nova joia ao array sem substituir as existentes
+          user.jewelries.push(jewelry);
+
+          // Salvar as alterações no banco de dados
+          await this.userRepository.save(user);
+
+          return {
+            Sucess: `Jewel id ${jewelry.id} (${jewelry.type}) successfully assigned to the user`,
+          };
+        }
       }
-
-      // Adicionar a nova joia ao array sem substituir as existentes
-      user.jewelries.push(jewelry);
-
-      // Salvar as alterações no banco de dados
-      await this.userRepository.save(user);
-
-      return {
-        Sucess: `Jewel id ${jewelry.id} (${jewelry.type}) successfully assigned to the user`,
-      };
     } catch (error) {
       console.error(error);
       throw new HttpException(error.message, error.status);
