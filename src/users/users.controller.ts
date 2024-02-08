@@ -19,8 +19,8 @@ import { UserEntity } from 'src/database/entities';
 import { ChangePasswordDto } from './dto/update-user.password.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-ApiTags('Users')
-ApiBearerAuth()
+ApiTags('Users');
+ApiBearerAuth();
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
