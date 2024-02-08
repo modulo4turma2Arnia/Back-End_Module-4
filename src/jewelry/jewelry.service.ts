@@ -130,13 +130,6 @@ export class JewelryService {
           }
         } else {
           user.credits++;
-          // Verificar se user.jewelries é um array
-          // if (!Array.isArray(user.jewelries)) {
-          //   // Se não for um array (pode ser undefined), inicialize como uma array vazia
-          //   user.jewelries = [];
-          // }
-
-          // Adicionar a nova joia ao array sem substituir as existentes
           user.jewelries.push(jewelry);
 
           // Salvar as alterações no banco de dados

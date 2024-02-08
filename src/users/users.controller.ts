@@ -73,7 +73,7 @@ export class UsersController {
     @Param('productId') productId: string,
     @CurrentUser() currentUser: UserEntity,
   ) {
-    return this.usersService.RescueProduct(+productId, currentUser);
+    return this.usersService.RescueProduct(+productId, +currentUser.id);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
