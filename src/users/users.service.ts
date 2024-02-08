@@ -17,7 +17,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private UserRepository: Repository<UserEntity>,
     @InjectRepository(ProductEntity)
-    private productRepository: Repository<ProductEntity>,
+    private ProductRepository: Repository<ProductEntity>,
   ) {}
 
   async FindAll_Users() {
@@ -75,24 +75,56 @@ export class UsersService {
     }
   }
 
+  // async RescueProduct(productId: number, user: UserEntity) {
+  //   try {
+  //     //console.log('Received productId:', productId);
+
+  //     // Verifica se productId é um número válido
+  //     if (isNaN(productId) || productId <= 0) {
+  //       // console.log('Invalid productId detected.');
+  //       throw new BadRequestException('Invalid productId');
+  //     }
+
+  //     //console.log('Finding product by ID:', productId);
+
+  //     // Encontrar o produto pelo ID
+  //     const product = await this.productRepository.findOneOrFail({
+  //       where: { id: productId },
+  //     });
+
+  //     //console.log('Product rescue successful:', product);
+
+  //     return user;
+  //   } catch (error) {
+  //     throw new HttpException(error.message, error.status);
+  //   }
+  // }
+
   async RescueProduct(productId: number, user: UserEntity) {
     try {
-      console.log('Received productId:', productId);
-
       // Verifica se productId é um número válido
       if (isNaN(productId) || productId <= 0) {
-        // console.log('Invalid productId detected.');
         throw new BadRequestException('Invalid productId');
       }
 
-      console.log('Finding product by ID:', productId);
-
       // Encontrar o produto pelo ID
-      const product = await this.productRepository.findOneOrFail({
+      const product = await this.ProductRepository.findOneOrFail({
         where: { id: productId },
       });
 
-      console.log('Product rescue successful:', product);
+      // Verificar se o usuário tem créditos suficientes para resgatar o produto
+      if (user.credits < product.price) {
+        throw new BadRequestException('Insufficient credits.');
+      }
+
+      // Subtrair o valor do produto dos créditos do usuário
+      user.credits -= product.price;
+
+      // Adicionar o produto à lista de produtos do usuário
+      user.products.push(product);
+
+      // Salvar as alterações no banco de dados
+      await this.UserRepository.save(user);
 
       return user;
     } catch (error) {
