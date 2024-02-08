@@ -87,3 +87,4 @@ export class UsersController {
     return this.usersService.changePassword(currentUser.id, changePasswordDto);
   }
 }
+
