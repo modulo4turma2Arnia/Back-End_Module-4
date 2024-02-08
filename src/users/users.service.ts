@@ -3,6 +3,7 @@ import {
   NotFoundException,
   HttpException,
   BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,7 +18,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private UserRepository: Repository<UserEntity>,
     @InjectRepository(ProductEntity)
-    private productRepository: Repository<ProductEntity>,
+    private ProductRepository: Repository<ProductEntity>,
   ) {}
 
   async FindAll_Users() {
@@ -75,28 +76,86 @@ export class UsersService {
     }
   }
 
-  async RescueProduct(productId: number, user: UserEntity) {
-    try {
-      //console.log('Received productId:', productId);
+  // async RescueProduct(productId: number, user: UserEntity) {
+  //   try {
+  //     //console.log('Received productId:', productId);
 
-      // Verifica se productId é um número válido
-      if (isNaN(productId) || productId <= 0) {
-        // console.log('Invalid productId detected.');
-        throw new BadRequestException('Invalid productId');
+  //     // Verifica se productId é um número válido
+  //     if (isNaN(productId) || productId <= 0) {
+  //       // console.log('Invalid productId detected.');
+  //       throw new BadRequestException('Invalid productId');
+  //     }
+
+  //     //console.log('Finding product by ID:', productId);
+
+  //     // Encontrar o produto pelo ID
+  //     const product = await this.productRepository.findOneOrFail({
+  //       where: { id: productId },
+  //     });
+
+  //     //console.log('Product rescue successful:', product);
+
+  //     return user;
+  //   } catch (error) {
+  //     throw new HttpException(error.message, error.status);
+  //   }
+  // }
+
+  async RescueProduct(productId: number, currentUser: UserEntity) {
+    try {
+      // Verifica se o ID do produto é um número válido
+      if (isNaN(productId)) {
+        throw new Error('ID de produto inválido');
       }
 
-      //console.log('Finding product by ID:', productId);
-
-      // Encontrar o produto pelo ID
-      const product = await this.productRepository.findOneOrFail({
+      // Busca o produto no banco de dados pelo ID
+      const product = await this.ProductRepository.findOne({
         where: { id: productId },
       });
 
-      //console.log('Product rescue successful:', product);
+      // Se o produto não for encontrado, lança um erro
+      if (!product) {
+        throw new NotFoundException(
+          `Produto com ID ${productId} não encontrado`,
+        );
+      }
+      console.log('currentUser.credits:', currentUser.credits);
+      console.log('product.price:', product.price);
 
-      return user;
+      if (!currentUser || currentUser.credits === undefined) {
+        throw new BadRequestException(
+          'Usuário inválido ou créditos do usuário não definidos',
+        );
+      }
+
+      if (
+        !Number.isFinite(currentUser.credits) ||
+        !Number.isFinite(product.price)
+      ) {
+        throw new BadRequestException(
+          'Créditos do usuário ou preço do produto inválido',
+        );
+      }
+
+      // Verifica se o usuário tem créditos suficientes para resgatar o produto
+      if (currentUser.credits < product.price) {
+        throw new BadRequestException(
+          'Créditos insuficientes para resgate do produto',
+        );
+      }
+
+      // Se o usuário tiver créditos suficientes, subtrai o preço do produto dos créditos do usuário
+      currentUser.credits -= product.price;
+
+      // Salva o usuário atualizado no banco de dados
+      await this.UserRepository.save(currentUser);
+
+      // Retorna uma mensagem de sucesso e o produto resgatado
+      return { message: 'Resgate do produto foi bem sucedido', product };
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+      // Se ocorrer algum erro, registra o erro e lança uma exceção HTTP
+      console.error(error);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
