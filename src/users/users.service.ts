@@ -77,7 +77,7 @@ export class UsersService {
 
   async RescueProduct(productId: number, user: UserEntity) {
     try {
-      //console.log('Received productId:', productId);
+      console.log('Received productId:', productId);
 
       // Verifica se productId é um número válido
       if (isNaN(productId) || productId <= 0) {
@@ -85,14 +85,14 @@ export class UsersService {
         throw new BadRequestException('Invalid productId');
       }
 
-      //console.log('Finding product by ID:', productId);
+      console.log('Finding product by ID:', productId);
 
       // Encontrar o produto pelo ID
       const product = await this.productRepository.findOneOrFail({
         where: { id: productId },
       });
 
-      //console.log('Product rescue successful:', product);
+      console.log('Product rescue successful:', product);
 
       return user;
     } catch (error) {
