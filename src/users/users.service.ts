@@ -75,37 +75,49 @@ export class UsersService {
     }
   }
 
-  async RescueProduct(productId: number, user: UserEntity) {
+  async RescueProduct(productId: number, UserId: number) {
     try {
-      //console.log('Received productId:', productId);
 
-      // Verifica se productId é um número válido
-      if (isNaN(productId) || productId <= 0) {
-        // console.log('Invalid productId detected.');
-        throw new BadRequestException('Invalid productId');
-      }
-
-      //console.log('Finding product by ID:', productId);
-
-      // Encontrar o produto pelo ID
-      const product = await this.productRepository.findOneOrFail({
-        where: { id: productId },
+      // procurando produto por id 
+      const ProductFound = await this.productRepository.findOne({ where: { id: productId } });
+     // procurando user por id 
+      const UserFound = await this.UserRepository.findOne({ where: { id: UserId },
+        relations: { products: true },
       });
+  
+      // se usuario foi encontrado ee se o credito dele for mairo que o preço do produto
+      if (UserFound && UserFound.credits > ProductFound.price) {
+        
+        // Deduzir créditos do usuário
+        UserFound.credits -= ProductFound.price;
 
-      //console.log('Product rescue successful:', product);
+        // adicionando o produto ao array do usuario
+        UserFound.products.push(ProductFound);
 
-      return user;
+        // Salvar usuário atualizado
+        await this.UserRepository.save(UserFound);
+        
+        // Recuperar o usuário atualizado
+        const UserUpdated = await this.UserRepository.findOne({ where: { id: UserId },
+          relations: { products: true },
+        })
+
+        return UserUpdated;
+      } else {
+        return 'user does not have enough credits.';
+      }
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
+  
 
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
     try {
       const user = await this.UserRepository.findOne({
         where: { id: userId },
         select: ['id', 'password'],
-      })
+      });
 
       if (!user) {
         throw new NotFoundException(`User with ID ${userId} not found`);
@@ -138,7 +150,6 @@ export class UsersService {
       );
 
       user.password = hashedNewPassword;
-
 
       await this.UserRepository.save(user);
       return { Result: 'User Password changed succefully' };

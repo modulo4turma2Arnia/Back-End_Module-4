@@ -25,7 +25,7 @@ import { UserEntity } from './user.entity';
   
     @Column({ type: 'varchar', length: 256, nullable: false})
     image: string;
-  
+     
 
     @ManyToMany(() => UserEntity, (user) => user.products)
     @JoinTable()
