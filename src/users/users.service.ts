@@ -76,9 +76,15 @@ export class UsersService {
     }
   }
 
+<<<<<<< HEAD
   // async RescueProduct(productId: number, user: UserEntity) {
   //   try {
   //     //console.log('Received productId:', productId);
+=======
+  async RescueProduct(productId: number, user: UserEntity) {
+    try {
+      console.log('Received productId:', productId);
+>>>>>>> 1fcf79390de4e6754211695ae6bf544e928c35b9
 
   //     // Verifica se productId é um número válido
   //     if (isNaN(productId) || productId <= 0) {
@@ -108,6 +114,7 @@ export class UsersService {
         throw new Error('ID de produto inválido');
       }
 
+<<<<<<< HEAD
       // Busca o produto no banco de dados pelo ID
       const product = await this.ProductRepository.findOne({
         where: { id: productId },
@@ -121,6 +128,16 @@ export class UsersService {
       }
       console.log('currentUser.credits:', currentUser.credits);
       console.log('product.price:', product.price);
+=======
+      console.log('Finding product by ID:', productId);
+
+      // Encontrar o produto pelo ID
+      const product = await this.productRepository.findOneOrFail({
+        where: { id: productId },
+      });
+
+      console.log('Product rescue successful:', product);
+>>>>>>> 1fcf79390de4e6754211695ae6bf544e928c35b9
 
       if (!currentUser || currentUser.credits === undefined) {
         throw new BadRequestException(

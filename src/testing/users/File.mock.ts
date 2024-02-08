@@ -14,7 +14,7 @@ export const GetFilesMock = async () => {
     size: 1000,
     stream,
     buffer,
-  }
+  };
 
   return photo;
-}
+};

@@ -1,7 +1,6 @@
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { ProductEntity } from "../../database/entities/index";
-import { ListProductsMock } from "./products-list.mock";
-
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { ProductEntity } from '../../database/entities/index';
+import { ListProductsMock } from './products-list.mock';
 
 export const ProductsRepositoryMock = {
   provide: getRepositoryToken(ProductEntity),
@@ -20,8 +19,3 @@ export const ProductsRepositoryMock = {
     })),
   },
 };
-
-
-  
-  
-  
