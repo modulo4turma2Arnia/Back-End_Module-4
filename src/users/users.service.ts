@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  HttpException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity, UserEntity } from 'src/database/entities';
@@ -75,58 +70,39 @@ export class UsersService {
     }
   }
 
-  // async RescueProduct(productId: number, user: UserEntity) {
-  //   try {
-  //     //console.log('Received productId:', productId);
-
-  //     // Verifica se productId é um número válido
-  //     if (isNaN(productId) || productId <= 0) {
-  //       // console.log('Invalid productId detected.');
-  //       throw new BadRequestException('Invalid productId');
-  //     }
-
-  //     //console.log('Finding product by ID:', productId);
-
-  //     // Encontrar o produto pelo ID
-  //     const product = await this.productRepository.findOneOrFail({
-  //       where: { id: productId },
-  //     });
-
-  //     //console.log('Product rescue successful:', product);
-
-  //     return user;
-  //   } catch (error) {
-  //     throw new HttpException(error.message, error.status);
-  //   }
-  // }
-
-  async RescueProduct(productId: number, user: UserEntity) {
+  async RescueProduct(productId: number, UserId: number) {
     try {
-      // Verifica se productId é um número válido
-      if (isNaN(productId) || productId <= 0) {
-        throw new BadRequestException('Invalid productId');
-      }
-
-      // Encontrar o produto pelo ID
-      const product = await this.ProductRepository.findOneOrFail({
+      // procurando produto por id
+      const ProductFound = await this.ProductRepository.findOne({
         where: { id: productId },
       });
+      // procurando user por id
+      const UserFound = await this.UserRepository.findOne({
+        where: { id: UserId },
+        relations: { products: true },
+      });
 
-      // Verificar se o usuário tem créditos suficientes para resgatar o produto
-      if (user.credits < product.price) {
-        throw new BadRequestException('Insufficient credits.');
+      // se usuario foi encontrado ee se o credito dele for mairo que o preço do produto
+      if (UserFound && UserFound.credits > ProductFound.price) {
+        // Deduzir créditos do usuário
+        UserFound.credits -= ProductFound.price;
+
+        // adicionando o produto ao array do usuario
+        UserFound.products.push(ProductFound);
+
+        // Salvar usuário atualizado
+        await this.UserRepository.save(UserFound);
+
+        // Recuperar o usuário atualizado
+        const UserUpdated = await this.UserRepository.findOne({
+          where: { id: UserId },
+          relations: { products: true },
+        });
+
+        return UserUpdated;
+      } else {
+        return 'user does not have enough credits.';
       }
-
-      // Subtrair o valor do produto dos créditos do usuário
-      user.credits -= product.price;
-
-      // Adicionar o produto à lista de produtos do usuário
-      user.products.push(product);
-
-      // Salvar as alterações no banco de dados
-      await this.UserRepository.save(user);
-
-      return user;
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
