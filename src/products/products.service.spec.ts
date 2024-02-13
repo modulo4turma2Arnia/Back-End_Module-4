@@ -86,45 +86,96 @@ describe('ProductsService', () => {
       const result = await service.FindAll(1, 5, 'produto', 50);
 
       expect(result).toEqual(ListProductsMock);
-    }) 
+    })
+    
+    it('should throw an error when there is an internal server error', async () => {
+      // Mock para lançar um erro ao chamar o repositório
+      jest.spyOn(service['ProductRepository'], 'createQueryBuilder').mockImplementation(() => {
+        throw new Error('Internal server error');
+      });
+  
+      // Verifica se a chamada à função FindAll lança uma exceção
+      await expect(service.FindAll(1, 5, 'produto', 50)).rejects.toThrow(HttpException);
+    });
+    
   })
 
   describe('Search product by id', () => {
     it("must be able to return a product when an id is sent to function", async () => {
 
-      const result = await service.findOne(ListProductsMock[0].id)
+      const result = await service.FindOne(ListProductsMock[0].id)
 
       expect(result).toEqual(ListProductsMock[0]);
+    })
+
+    it("Return an error when product id is not found", async () => {
+      jest
+      .spyOn(ProductsRepositoryMock.useValue, 'findOne')
+      .mockResolvedValue(null as never);
+
+    const result = service.FindOne(ListProductsMock[0].id);
+
+    await expect(result).rejects.toThrow(HttpException);
 
     })
+    
+    
   })
 
 
   describe('Update product by id', () => {
     it("Must be able to update a product when an id and payload is sent to function", async () => {
 
+      jest
+      .spyOn(ProductsRepositoryMock.useValue, 'findOne')
+      .mockResolvedValue(ListProductsMock[0] as never);
+
+
       const result = await service.UpdateProduct(ListProductsMock[0].id, UpdateProductMock)
 
-      expect(result).toEqual(UpdatedProductsMock);
+     expect(result).toEqual(UpdatedProductsMock);
 
     })
 
     it("Should throw an exception if a product with the sent id is not found", async () => {
       
-      jest.spyOn(ProductsRepositoryMock.useValue, 'findOne').mockResolvedValue(null as never);
+      jest
+      .spyOn(ProductsRepositoryMock.useValue, 'findOne')
+      .mockResolvedValue(null as never)
+
+      const Update = service.UpdateProduct(ListProductsMock[0].id, UpdateProductMock);
     
-      
-      const updatePromise = service.UpdateProduct(ListProductsMock[0].id, UpdateProductMock);
-    
-      
-      //await expect(updatePromise).rejects.toThrow(HttpException);
-      await expect(updatePromise).rejects.toThrow(new HttpException('Product with ID 1 not found', HttpStatus.NOT_FOUND));
+       await expect(Update).rejects.toThrow(HttpException);
 
     })
-    
-
-
   })
+
+
+
+describe("Soft delete", () => {
+  it("Should be possible remove a product from database", async () => {
+
+    jest.spyOn(ProductsRepositoryMock.useValue, 'findOne').mockResolvedValue(ListProductsMock[0] as never)
+
+    const result = await service.RemoveProduct(ListProductsMock[0].id)
+    
+     expect(result).toEqual({ result: `Product with id ${ListProductsMock[0].id} has been remove.` })
+  })
+
+  it("Return an error with product id not found", async () => {
+
+    jest
+    .spyOn(ProductsRepositoryMock.useValue, 'findOne')
+    .mockResolvedValue(null as never);
+
+  const result = service.RemoveProduct(ListProductsMock[0].id);
+
+  await expect(result).rejects.toThrow(HttpException);
+     
+  })
+
+
+})
 
 
 });

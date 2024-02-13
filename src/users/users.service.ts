@@ -3,13 +3,23 @@ import {
   NotFoundException,
   HttpException,
   BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity, UserEntity } from 'src/database/entities';
+import { ProductEntity, UserEntity } from '../database/entities/index';
 import { Repository } from 'typeorm';
 import { ChangePasswordDto } from './dto/update-user.password.dto';
 import * as bcrypt from 'bcrypt';
+
+
+// testando uma nova execeção personalizada
+export class InsufficientCreditsException extends HttpException {
+  constructor() {
+    super('User does not have enough credits.', HttpStatus.BAD_REQUEST);
+  }
+}
+
 
 @Injectable()
 export class UsersService {
@@ -20,29 +30,58 @@ export class UsersService {
     private productRepository: Repository<ProductEntity>,
   ) {}
 
-  async FindAll_Users() {
-    return await this.UserRepository.find();
+  async FindAllUsers() {
+    try {
+      const FindAllUsers = await this.UserRepository.find();
+      if(FindAllUsers.length > 0){
+          return FindAllUsers;
+      } else {
+        throw new NotFoundException('There are no registered Users')
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status)
+    }
   }
 
   async FindOne(id: number) {
-    return await this.UserRepository.findOne({
-      where: { id },
-    });
+    try {
+      const UserFound = await this.UserRepository.findOne({
+        where: { id }
+      });
+
+      if(UserFound){
+          return UserFound;
+      } else {
+        throw new NotFoundException(`There no are registered user with ${id}.`)
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status)
+    }
+
   }
 
   async GetInfoUsers(id: number) {
-    console.log('id chegado na get info', id);
-    return await this.UserRepository.findOne({
-      where: { id },
-      relations: { products: true, jewelries: true },
-    });
+    try {
+    const Getinfo = await this.UserRepository.findOne({
+        where: { id },
+        relations: { products: true, jewelries: true },
+      });
+
+      if(Getinfo){
+        return Getinfo;
+      } else {
+        throw new NotFoundException(`There no user with ${id} registered.`)
+      }
+    } catch (error) {
+    throw new HttpException(error.message, error.status) 
+    }
   }
 
   async UpdateUser(id: number, updateUserDto: UpdateUserDto) {
     try {
-      const existingUser = await this.UserRepository.findOne({ where: { id } });
+      const ExistingUser = await this.UserRepository.findOne({ where: { id } });
 
-      if (!existingUser) {
+      if (!ExistingUser) {
         throw new NotFoundException(`User with ID ${id} not found`);
       }
 
@@ -54,16 +93,15 @@ export class UsersService {
 
       return updatedUser;
     } catch (error) {
-      console.error(error);
       throw new HttpException(error.message, error.status);
     }
   }
 
-  async Remove_User(id: number) {
+  async RemoveUser(id: number) {
     try {
-      const existingUser = await this.UserRepository.findOne({ where: { id } });
+      const UserFound = await this.UserRepository.findOne({ where: { id } });
 
-      if (existingUser) {
+      if (UserFound) {
         // 2 tipos, softdelete e softremove , achei o softDelete melhor
         await this.UserRepository.softDelete(id);
         return { result: `User with id ${id} has been deleted.` };
@@ -84,7 +122,7 @@ export class UsersService {
       const UserFound = await this.UserRepository.findOne({ where: { id: UserId },
         relations: { products: true },
       });
-  
+      
       // se usuario foi encontrado ee se o credito dele for mairo que o preço do produto
       if (UserFound && UserFound.credits > ProductFound.price) {
         
@@ -103,8 +141,11 @@ export class UsersService {
         })
 
         return UserUpdated;
-      } else {
-        return 'user does not have enough credits.';
+      } else if (!ProductFound || !UserFound){
+        throw new NotFoundException('User or product not found')
+      }
+      else {
+        throw new InsufficientCreditsException();
       }
     } catch (error) {
       throw new HttpException(error.message, error.status);

@@ -73,7 +73,7 @@ describe('Auth Service', () => {
       await expect(loginAuth).rejects.toThrow(HttpException);
     });
 
-    it('should return an exception when the user is not found', async () => {
+    it('should return an exception when password is wrong', async () => {
       jest
         .spyOn(UserRepositoryMock.useValue, 'findOne')
         .mockResolvedValue(true);

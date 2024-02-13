@@ -77,39 +77,57 @@ export class ProductsService {
     }
   }
 
-  async FindAll( page: number = 1, limit: number = 5, name: string, price: number) {
-    const skip = (page - 1) * limit;
+  async FindAll( page: number = 1, limit: number = 8, name: string, price: number) {
 
-    let queryBuilder = this.ProductRepository.createQueryBuilder('product');
+    try {
+      const skip = (page - 1) * limit;
 
-    // Adiciona condições opcionais se os parâmetros estiverem presentes
-    if (name) {
-      // Usa ILIKE pra pesquisa case-insensitive (tanto maiusculas quanto minusculas)
-      queryBuilder = queryBuilder.andWhere('product.name ILIKE :name', {
-        name: `%${name}%`,
-      });
-    }
-
-    if (price) {
-      // a pesquisa deve ser feita com valores proximos tambem? perguntar o luiz
-      // Utiliza operadores >= e <= para buscar valores próximos
-      const tolerance = 5; // Ajuste conforme necessário
-      queryBuilder = queryBuilder
-        .andWhere('product.price >= :minPrice', { minPrice: price - tolerance })
-        .andWhere('product.price <= :maxPrice', {
-          maxPrice: price + tolerance,
+      let queryBuilder = this.ProductRepository.createQueryBuilder('product');
+  
+      // Adiciona condições opcionais se os parâmetros estiverem presentes
+      if (name) {
+        // Usa ILIKE pra pesquisa case-insensitive (tanto maiusculas quanto minusculas)
+        queryBuilder = queryBuilder.andWhere('product.name ILIKE :name', {
+          name: `%${name}%`,
         });
+      }
+  
+      if (price) {
+        // a pesquisa deve ser feita com valores proximos tambem? perguntar o luiz
+        // Utiliza operadores >= e <= para buscar valores próximos
+        const tolerance = 5; // Ajuste conforme necessário
+        queryBuilder = queryBuilder
+          .andWhere('product.price >= :minPrice', { minPrice: price - tolerance })
+          .andWhere('product.price <= :maxPrice', {
+            maxPrice: price + tolerance,
+          });
+      }
+  
+      // Aplicando a paginação com os filtros recebidos e retorna os resultados
+      const results = await queryBuilder.skip(skip).take(limit).getMany();
+      return results;
+    } catch (error) {
+      throw new HttpException(error.message, error.status)
     }
 
-    // Aplicando a paginação com os filtros recebidos e retorna os resultados
-    const results = await queryBuilder.skip(skip).take(limit).getMany();
-    return results;
   }
 
-  async findOne(id: number) {
-    return await this.ProductRepository.findOne({
-      where: { id },
-    });
+  async FindOne(id: number) {
+    try {
+
+      const FindProduct = await this.ProductRepository.findOne({
+        where: { id }
+      })
+      if(FindProduct){
+        return FindProduct;
+      } else {
+        throw new NotFoundException(
+          `Product Id ${id} not found.`,
+        )
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status)
+    }
   }
 
   async UpdateProduct(id: number, updateProductDto: UpdateProductDto) {
@@ -126,11 +144,11 @@ export class ProductsService {
       await this.ProductRepository.update(id, updateProductDto);
 
       // busca novamente depois aa atualização
-      const updatedProduct = await this.ProductRepository.findOne({
-        where: { id },
+      const UpdatedProduct = await this.ProductRepository.findOne({
+        where: { id }
       });
 
-      return updatedProduct;
+      return UpdatedProduct;
     }catch (error) {
       throw new HttpException(error.message, error.status);
     }
@@ -143,7 +161,6 @@ export class ProductsService {
       });
 
       if (VerifyProduct) {
-        // 2 tipos, softdelete e softremove , achei o softDelete melhor
         await this.ProductRepository.softDelete(id);
         return { result: `Product with id ${id} has been remove.` };
       } else {
