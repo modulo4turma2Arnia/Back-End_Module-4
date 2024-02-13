@@ -13,11 +13,11 @@ import {
 import { JewelryService } from './jewelry.service';
 import { CreateJewelryDto } from './dto/create-jewelry.dto';
 import { UpdateJewelryDto } from './dto/update-jewelry.dto';
-import { Roles } from 'src/auth/decorators/roles';
-import { AuthGuard } from 'src/auth/guards/auth-guard';
-import { RolesGuards } from 'src/auth/guards/role-guard';
-import { RoleEnum } from 'src/enums/role.enum';
-import { FileDTO } from 'src/auth/dto/files.dto';
+import { Roles } from '../auth/decorators/roles';
+import { AuthGuard } from '../auth/guards/auth-guard';
+import { RolesGuards } from '../auth/guards/role-guard';
+import { RoleEnum } from '../enums/role.enum';
+import { FileDTO } from '../auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('jewelry')
@@ -61,11 +61,11 @@ export class JewelryController {
   @Roles(RoleEnum.admin)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateJewelryDto: UpdateJewelryDto) {
-    return this.jewelryService.update(+id, updateJewelryDto);
+    return this.jewelryService.Update(+id, updateJewelryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.jewelryService.remove(+id);
+    return this.jewelryService.Remove(+id);
   }
 }
