@@ -39,7 +39,6 @@ export class AuthService {
     // se imagem existir
     if (file) {
       const [extension] = file.originalname.split('.');
-      console.log('original name', file.originalname);
       const formattedFilename = `${Date.now()}.${extension}`;
 
       const storageRef = ref(storage, formattedFilename);
@@ -68,8 +67,6 @@ export class AuthService {
 
       return New_User;
     } catch (error) {
-      console.log('Erro =>', error);
-
       throw new HttpException(error.message, error.status);
     }
   }

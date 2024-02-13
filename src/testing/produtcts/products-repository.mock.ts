@@ -9,8 +9,9 @@ export const ProductsRepositoryMock = {
     exists: jest.fn(),
     create: jest.fn(() => ListProductsMock[3]),
     save: jest.fn(),
-    update: jest.fn(),
     findOne: jest.fn(() => ListProductsMock[0]),
+    update: jest.fn(() => ListProductsMock[0]),
+    softDelete: jest.fn(() => ListProductsMock[0]), 
     createQueryBuilder: jest.fn(() => ({
       where: jest.fn().mockReturnThis(),
       andWhere: jest.fn().mockReturnThis(),
