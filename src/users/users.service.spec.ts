@@ -29,7 +29,7 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('Create Users', () => {
+  describe('Find All', () => {
     it('Return all users', async () => {
       const result = await service.FindAllUsers();
 

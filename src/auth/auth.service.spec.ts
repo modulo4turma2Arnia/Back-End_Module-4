@@ -66,7 +66,7 @@ describe('Auth Service', () => {
     it('should return an exception when the user is not found', async () => {
       jest
         .spyOn(UserRepositoryMock.useValue, 'findOne')
-        .mockResolvedValue(null);
+        .mockResolvedValue(null as never);
 
       const loginAuth = Auth_Service.LoginAuthService(LoginMock);
 
@@ -76,7 +76,7 @@ describe('Auth Service', () => {
     it('should return an exception when password is wrong', async () => {
       jest
         .spyOn(UserRepositoryMock.useValue, 'findOne')
-        .mockResolvedValue(true);
+        .mockResolvedValue(true as never);
       jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(false as never);
 
       const loginAuth = Auth_Service.LoginAuthService(LoginMock);
