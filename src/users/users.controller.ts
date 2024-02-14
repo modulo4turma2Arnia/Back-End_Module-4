@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { RoleEnum } from 'src/enums/role.enum';
-import { RolesGuards } from 'src/auth/guards/role-guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { Roles } from 'src/auth/decorators/roles';
-import { AuthGuard } from 'src/auth/guards/auth-guard';
-import { UserEntity } from 'src/database/entities';
+import { RoleEnum } from '../enums/role.enum';
+import { RolesGuards } from '../auth/guards/role-guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles';
+import { AuthGuard } from '../auth/guards/auth-guard';
+import { UserEntity } from '../database/entities/index';
 import { ChangePasswordDto } from './dto/update-user.password.dto';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -38,7 +38,7 @@ export class UsersController {
   @Get()
   @ApiResponse({ status: 200, description: 'Retorna todos os usuários' })
   findAll() {
-    return this.usersService.FindAll_Users();
+    return this.usersService.FindAllUsers();
   }
 
   @UseGuards(AuthGuard, RolesGuards)
@@ -52,9 +52,9 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
   @ApiResponse({ status: 200, description: 'Atualiza um usuário' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.UpdateUser(+id, updateUserDto);
+    return this.usersService.UpdateUser(+id, updateUserPayload);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
@@ -62,7 +62,7 @@ export class UsersController {
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Remove um usuário' })
   remove(@Param('id') id: string) {
-    return this.usersService.Remove_User(+id);
+    return this.usersService.RemoveUser(+id);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
@@ -78,12 +78,11 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
-  @Patch('ch/password') // Correção na rota, adicionando o ':'
-  @ApiResponse({ status: 200, description: 'Atualiza a senha do usuário' })
+  @Patch('chg/password') // Correção na rota, adicionando o ':'
   async updatePassword(
-    @Body() changePasswordDto: ChangePasswordDto,
+    @Body() NewPassWord: ChangePasswordDto,
     @CurrentUser() currentUser: UserEntity,
   ) {
-    return this.usersService.changePassword(currentUser.id, changePasswordDto);
+    return this.usersService.changePassword(currentUser.id, NewPassWord);
   }
 }

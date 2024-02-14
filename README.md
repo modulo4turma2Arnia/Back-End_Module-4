@@ -1,73 +1,168 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# 🚀 API Culture Power
+ ### Bem vindo(a)!
+ ```bash
+Esta API foi desenvolvida para uma empresa que deseja gamificar os resultados e recompensar seus colaboradores de acordo com seu desempenho. Os colaboradores podem resgatar produtos da loja virtual da empresa usando as joias adquiridas durante suas atividades.
+```
+## 💻 Instalação
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
+Antes de começar, certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
 ```bash
-$ npm install
+# Clone esse repositório
+- $ git clone https://github.com/modulo4turma2Arnia/Back-End_Module-4
+
+# Vá para o repositório Back-end
+- $ cd Back-Modulo4-Turma2
+
+# Instale as dependencias
+- $ npm i firebase typeorm pg @nestjs/core @nestjs/common @nestjs/swagger @nestjs/jwt @nestjs/config bcrypt class-transformer class-validator
+
+
+# Rode a aplicação
+- $ npm run start:dev
+```
+## 👨‍💻 Entidades utilizadas no projeto
+```bash
+- # Auth
+- $ Responsavel pela autenticação da API.
+- # Products
+- $ Registra os produtos, altera e também é responsavel por remover um produto do banco de dados.
+- # Joias
+- $ É a entidade responsavel por criar as jóias, assim como em prudutos também tem todos as rotas de um CRUD.
+- #  Users
+- $ E por último a entidade de user que é responsavel pelo usuário. assim como nas outras entidades também tem todos as rotas de um CRUD.
 ```
 
-## Running the app
+## 👨‍💻 Dependências Utilizadas
+📚 Aqui estão as estrelas do show, as dependências que fazem tudo funcionar:
 
-```bash
-# development
-$ npm run start
+- [bcrypt](https://www.npmjs.com/package/bcrypt)
+- [typeORM](https://docs.nestjs.com/recipes/sql-typeorm)
+- [jsonwebtoken](https://jwt.io/)
+- [firebase](https://firebase.google.com/?hl=pt)
+- [@nestjs/common](https://www.npmjs.com/package/@nestjs/common)
+- [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)
+- [@nestjs/jwt](https://docs.nestjs.com/security/authentication)
+- [@nestjs/config](https://docs.nestjs.com/techniques/configuration)
+- [@Class-transformer @Class-validator](https://docs.nestjs.com/techniques/validation)
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
+## 🛣️ Rotas da API
+
+### 🔵 GET v1/users/infouser
+- **Descrição**: Retorna todas as informações do usuário. (Necessita autenticação).
+### 🔵 GET v1/users/:id
+- **Descrição**: Retorna o usuário com id encontrado. (Necessita autenticação).
+### 🔵 GET v1/users
+- **Descrição**: Retorna todos os usuários cadastrados no Banco de dados. (Necessita autenticação).
+### 🔵 GET v1/products
+- **Descrição**: Retorna todos os Produtos, também é possivel filtrar.(Necessita autenticação).
+- **Exemplos de Query**: /v1/products?price=2 , /v1/products?name=apple, v1/products?page=1&limit=10
+### 🔵 GET v1/products/:id
+- **Descrição**: Retorna o produto encontrado com o mesmo id. (Necessita autenticação).
+### 🔵 GET v1/jewelry
+- **Descrição**: Retorna todas as jóias cadastradas no Banco. (Necessita  autenticação).
+
+### 🟢 POST v1/auth
+- **Descrição**: Verifica o login e retornar um token.
+- **Corpo da Requisição**:
+```javascript
+{
+email: "fulano@ciclano.com.br",
+password: "senha1234"
+}
+```
+### 🟢 POST v1/auth/register
+- **Descrição**: Cria um usuário no bando de dados(Necessita autenticação).
+- **Aviso**: A Imagem de perfil do usuário não é obrigatória. 
+- **Corpo da Requisição**:
+```javascript
+{
+FirstName: "Fulano"
+LastName: "Beltrano"
+email: "beltrano@fulano.com.br"
+profileImage: "URL Da imagem enviada."
+password: "senha123"
+}
+```
+### 🟢 POST v1/users/rescue/:id
+- **Descrição**: Resgata um produto e salva no usuário(Necessita autenticação).
+- **Descrição**: O Usuário precisa estar logado.
+
+### 🟢 POST /v1/products
+- **Descrição**: Cadastra um produto no sistema.
+- **Descrição**: Todos os produtos devem ter imagens.
+- **Corpo da Requisição**:
+```javascript
+{
+	"name": "Fritadeira Air Fryer Sem Óleo Britânia",
+	"description": "Fritadeira Air Fryer Sem Óleo...",
+	"price": "15",
+  "image": "URL da imagem"
+}
 ```
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
+### 🟢 POST /v1/jewelry/:userId/:jewelryId
+- **Descrição**: Atribui uma jóia a um usuário.
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### 🟢 POST v1/jewelry
+- **Descrição**: Cria uma jóia no banco de dados.
+- **Descrição**: Todas as jóias devem ter imagens.
+```javascript
+{
+	"type": "Joia do Tempo",
+	"habilities": "Nesta joia está a possibilidade de manejo da administr.....",
+  "image": "URL da imagem"
+}
 ```
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 🟡 PATH /v1/jewelry/:id
+- **Descrição**: Atualiza as propriedades da jóia encontrada.
+- **Corpo da Requisição**:
+ ```javascript
+{
+type: "Joia da Mente Modificada"
+}
+```
 
-## Stay in touch
+### 🟡 PATH /v1/products/:id
+- **Descrição**: Atualiza as propriedades de um produto encontrada.
+- **Corpo da Requisição**:
+ ```javascript
+{
+name: "JBL Tune 720BT"
+}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 🟡 PATH /v1/users/chg/password
+- **Descrição**: Atualiza a senha do usuário.
+- **Corpo da Requisição**:
+ ```javascript
+{
+	currentPassword: "senha123",
+	newPassword: "senha1234"
+}
+```
 
-## License
+### 🟡 PATH /v1/users/:id
+- **Descrição**: Atualiza as propriedades de um usuário encontrado.
+- **Corpo da Requisição**:
+ ```javascript
+{
+  FirstName: "Fulano Editado"
 
-Nest is [MIT licensed](LICENSE).
+}
+```
+
+### 🔴 DELETE /v1/users/:id
+- **Descrição**: Remove um usuário específico do banco de dados.
+
+### 🔴 DELETE /v1/products/:id
+- **Descrição**: Remove um produto específico do banco de dados.
+
+
+
+### Detalhes Adicionais
+- **Autores da API:** [Gabriel Anacleto](https://www.linkedin.com/in/gabriel-anacletoo/)  [Guilherme](https://github.com/syus13) 
+- **Contato:** gabrielanacleto159@live.com
