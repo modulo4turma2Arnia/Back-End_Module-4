@@ -7,7 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 
-import { RoleEnum } from 'src/enums/role.enum';
+import { RoleEnum } from '../../enums/role.enum';
 
 export class UserRegisterDto {
   //  @IsString() valida se o valor atribuído à propriedade é uma string.

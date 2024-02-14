@@ -14,11 +14,11 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { RolesGuards } from 'src/auth/guards/role-guard';
+import { RolesGuards } from '../auth/guards/role-guard';
 import { AuthGuard } from '../auth/guards/auth-guard';
-import { Roles } from 'src/auth/decorators/roles';
-import { RoleEnum } from 'src/enums/role.enum';
-import { FileDTO } from 'src/auth/dto/files.dto';
+import { Roles } from '../auth/decorators/roles';
+import { RoleEnum } from '../enums/role.enum';
+import { FileDTO } from '../auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
@@ -49,7 +49,7 @@ export class ProductsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+    return this.productsService.FindOne(+id);
   }
 
   @UseGuards(AuthGuard, RolesGuards)

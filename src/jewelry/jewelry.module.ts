@@ -6,9 +6,7 @@ import { JewelryEntity } from 'src/database/entities';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([JewelryEntity]), 
-  UsersModule
-],
+  imports: [TypeOrmModule.forFeature([JewelryEntity]), UsersModule],
   controllers: [JewelryController],
   providers: [JewelryService],
 })

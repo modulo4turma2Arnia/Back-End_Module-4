@@ -1,5 +1,4 @@
-
-import { IsNotEmpty, IsString, Length, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class CreateJewelryDto {
   @IsString()
@@ -10,7 +9,4 @@ export class CreateJewelryDto {
   @IsNotEmpty()
   @IsString()
   habilities: string;
-
-
 }
-
