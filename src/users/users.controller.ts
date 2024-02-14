@@ -52,9 +52,9 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
   @ApiResponse({ status: 200, description: 'Atualiza um usuário' })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.UpdateUser(+id, updateUserDto);
+    return this.usersService.UpdateUser(+id, updateUserPayload);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
