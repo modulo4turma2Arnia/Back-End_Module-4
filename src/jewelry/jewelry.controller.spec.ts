@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JewelryController } from './jewelry.controller';
 import { JewelryServiceMock, JwtServiceMock } from '../testing/index';
-import { AuthGuard } from '../auth/guards/auth-guard'; 
+import { AuthGuard } from '../auth/guards/auth-guard';
 import { authGuardMock } from '../testing/index';
 
 describe('JewelryController', () => {
@@ -12,9 +12,10 @@ describe('JewelryController', () => {
       imports: [],
       controllers: [JewelryController],
       providers: [JewelryServiceMock, JwtServiceMock],
-    }).overrideGuard(AuthGuard)
-    .useValue(authGuardMock) 
-    .compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue(authGuardMock)
+      .compile();
 
     controller = module.get<JewelryController>(JewelryController);
   });

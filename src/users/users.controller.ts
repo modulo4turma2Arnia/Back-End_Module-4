@@ -53,14 +53,12 @@ export class UsersController {
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
-  @ApiResponse({ status: 200, description: 'Atualiza um usuário' })
     return this.usersService.UpdateUser(+id, updateUserPayload);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Delete(':id')
-  @ApiResponse({ status: 200, description: 'Remove um usuário' })
   remove(@Param('id') id: string) {
     return this.usersService.RemoveUser(+id);
   }
@@ -68,7 +66,6 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Post('rescue/:productId')
-  @ApiResponse({ status: 200, description: 'Resgata um produto' })
   async rescueProduct(
     @Param('productId') productId: string,
     @CurrentUser() currentUser: UserEntity,
