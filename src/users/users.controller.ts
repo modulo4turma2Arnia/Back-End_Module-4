@@ -46,8 +46,8 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.UpdateUser(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
+    return this.usersService.UpdateUser(+id, updateUserPayload);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
