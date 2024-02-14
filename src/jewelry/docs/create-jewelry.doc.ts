@@ -16,5 +16,5 @@ export class CreateJewelryDoc {
       '(Comunicação) O poder dessa joia está na possibilidade de conseguir acessar diretamente os pensamentos de qualquer ser, transformando ideias em palavras, com assertividade na transmissão e receptividade das informações.',
     required: true,
   })
-  Habilities: string;
+  habilities: string;
 }
