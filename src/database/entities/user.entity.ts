@@ -64,7 +64,7 @@ export class UserEntity {
   deletedAt: Date;
 
   @BeforeInsert()
-  async passwordHash() {
+  async passwordHash(): Promise<void> {
     try {
       this.password = await bcrypt.hash(this.password, 10);
     } catch (error) {
