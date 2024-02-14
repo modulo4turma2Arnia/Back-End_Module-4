@@ -50,10 +50,10 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard, RolesGuards)
+  @ApiResponse({ status: 200, description: 'Atualiza um usuário' })
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
-  @ApiResponse({ status: 200, description: 'Atualiza um usuário' })
     return this.usersService.UpdateUser(+id, updateUserPayload);
   }
 
