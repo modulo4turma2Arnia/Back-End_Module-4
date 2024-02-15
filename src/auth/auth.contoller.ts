@@ -29,7 +29,6 @@ import { CreatedUserDoc } from './docs/created-user.doc';
 export class AuthController {
   constructor(private authService: AuthService) {}
   @UseGuards(AuthGuard, RolesGuards)
-  @Roles(RoleEnum.admin)
   @ApiBody({
     type: UserRegisterDoc,
   })
