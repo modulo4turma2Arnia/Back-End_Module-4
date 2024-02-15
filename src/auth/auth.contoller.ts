@@ -21,8 +21,8 @@ import { AuthGuard } from './guards/auth-guard';
 import { RolesGuards } from './guards/role-guard';
 import { Roles } from './decorators/roles';
 import { RoleEnum } from 'src/enums/role.enum';
-import { UserRegisterDoc } from './docs/register.doc';
-import { CreatedUserDoc } from './docs/createdUser.doc';
+import { UserRegisterDoc } from './docs/register-user.doc';
+import { CreatedUserDoc } from './docs/created-user.doc';
 
 @ApiTags('Auth')
 @Controller('auth')

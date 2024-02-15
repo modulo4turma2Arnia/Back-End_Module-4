@@ -27,7 +27,9 @@ import { CreatedJewelryDoc } from './docs/created-jewelry.doc';
 import { GiveJewelryDoc } from './docs/give-jewelry.doc';
 import { UpdateJewelryDoc } from './docs/update-jewelry.doc';
 import { DeleteJewelryResponseDoc } from './docs/delete-jewelry-response.doc';
-import { CreatedUserDoc } from 'src/auth/docs/createdUser.doc';
+import { CreatedUserDoc } from 'src/auth/docs/created-user.doc';
+import { GiveJewelryDocResponseDoc } from './docs/give-jewelry-response.doc';
+import { UpdatedJewelryDoc } from './docs/updated-jewelry.doc ';
 
 @ApiTags('Jewelry')
 @ApiBearerAuth()
@@ -71,7 +73,7 @@ export class JewelryController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: CreatedJewelryDoc,
+    type: GiveJewelryDocResponseDoc,
   })
   @Post(':userId/:jewelryId')
   GiveJewelry(
@@ -84,7 +86,7 @@ export class JewelryController {
   @UseGuards(AuthGuard, RolesGuards)
   @ApiResponse({
     status: HttpStatus.OK,
-    type: CreatedUserDoc,
+    type: CreatedJewelryDoc,
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -98,7 +100,7 @@ export class JewelryController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: CreatedJewelryDoc,
+    type: UpdatedJewelryDoc,
   })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateJewelryDto: UpdateJewelryDto) {

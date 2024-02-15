@@ -146,7 +146,7 @@ export class JewelryService {
           await this.userRepository.save(user);
 
           return {
-            Sucess: `Jewel "${jewelry.id}" and credits successfully assigned to the user`,
+            Sucess: `Jewel "${jewelry.type}" and credits successfully assigned to the user`,
           };
         }
       }

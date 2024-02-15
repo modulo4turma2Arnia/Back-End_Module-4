@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FileDoc } from 'src/auth/docs/file.doc';
 
 export class CreateJewelryDoc {
   @ApiProperty({
@@ -17,4 +18,11 @@ export class CreateJewelryDoc {
     required: true,
   })
   habilities: string;
+
+  @ApiProperty({
+    type: FileDoc,
+    description: 'Upload image jewelry.',
+    required: true,
+  })
+  profileImage: FileDoc;
 }

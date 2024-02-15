@@ -4,7 +4,7 @@ export class UpdateJewelryDoc {
   @ApiProperty({
     type: String,
     description: 'New type of jewelry.',
-    example: 'Joia da Mente ',
+    example: 'Joia do tempo ',
     required: true,
   })
   type: string;
@@ -13,7 +13,7 @@ export class UpdateJewelryDoc {
     type: String,
     description: 'New habilities or features of the jewelry.',
     example:
-      '(Comunicação) O poder dessa joia está na possibilidade de conseguir acessar diretamente os pensamentos de qualquer ser, transformando ideias em palavras, com assertividade na transmissão e receptividade das informações.',
+      'Foco - Nesta joia está a possibilidade de total domínio sobre a dimensão temporal, aquele que a possui tem a capacidade de lidar com grande volume de demandas dentro dos prazos estabelecidos, mantendo atenção aos detalhes, tendo em vista o alcance de resultados.',
     required: true,
   })
   habilities: string;
