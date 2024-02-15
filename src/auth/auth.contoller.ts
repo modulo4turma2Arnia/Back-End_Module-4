@@ -41,10 +41,10 @@ export class AuthController {
   @Post('register')
   @UseInterceptors(FileInterceptor('profileImage'))
   async register(
-    @Body() PayLoad: UserRegisterDto,
-    @UploadedFile() file: FileDTO,
+    @Body() UserPayLoad: UserRegisterDto,
+    @UploadedFile() image: FileDTO,
   ) {
-    return await this.authService.RegisterAuthService(PayLoad, file);
+    return await this.authService.RegisterAuthService(UserPayLoad, image);
   }
 
   @ApiBody({
