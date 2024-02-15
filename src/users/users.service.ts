@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   HttpException,
-  BadRequestException,
   HttpStatus,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
