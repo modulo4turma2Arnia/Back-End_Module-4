@@ -1,31 +1,31 @@
+import { CreateProductDoc } from './create-product.doc';
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateJewelryDoc } from './create-jewelry.doc';
 
-export class CreatedJewelryDoc extends CreateJewelryDoc {
+export class CreatedProductDoc extends CreateProductDoc {
   @ApiProperty({
     type: Number,
-    description: 'Unique identificator for an jewelry.',
+    description: 'Unique identificator for an product.',
     example: 1,
   })
   id: number;
 
   @ApiProperty({
     type: Date,
-    description: 'When an jewelry was created.',
+    description: 'When an product was created.',
     example: '2024-02-14',
   })
   createdAt: Date;
 
   @ApiProperty({
     type: Date,
-    description: 'When an jewelry was updated.',
+    description: 'When an product was updated.',
     example: '2024-02-14',
   })
   updatedAt: Date;
 
   @ApiProperty({
     type: Date,
-    description: 'When an jewelry was deleted.',
+    description: 'When an product was deleted.',
     example: ' 2024-02-14 14:16:32.594761',
   })
   deletedAt: Date;
