@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, Length, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -13,7 +13,5 @@ export class CreateProductDto {
   @IsNotEmpty()
   price: number;
 }
-
-
 
 //adicionar  cor ???

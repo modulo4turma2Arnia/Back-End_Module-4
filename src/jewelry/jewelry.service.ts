@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { CreateJewelryDto } from './dto/create-jewelry.dto';
 import { UpdateJewelryDto } from './dto/update-jewelry.dto';
-import { FileDTO } from 'src/auth/dto/files.dto';
+import { FileDTO } from '../auth/dto/files.dto';
 import { Repository } from 'typeorm';
-import { appFireBase } from 'src/firebase/firebase.config';
+import { appFireBase } from '../firebase/firebase.config';
 import {
   getStorage,
   ref,
@@ -39,16 +39,22 @@ export class JewelryService {
         throw new BadRequestException('Please provide exactly one image.');
       }
 
-      // Se imagem existir e não for uma imagem
-      if (photo && !photo.mimetype.startsWith('image/')) {
-        throw new UnsupportedMediaTypeException(
-          'Only image files are allowed.',
-        );
+      // Caso exista o arquivo de foto
+      if (photo) {
+        // Se imagem existir e não for uma imagem
+        if (photo && !photo.mimetype.startsWith('image/')) {
+          throw new UnsupportedMediaTypeException(
+            'Only image files are allowed.',
+          );
+        }
+
+        const [extension] = photo.originalname.split('.');
+        const formattedFilename = `${Date.now()}.${extension}`;
+
+        const storageRef = ref(storage, formattedFilename);
+        await uploadBytesResumable(storageRef, photo.buffer);
+        ImageURL = await getDownloadURL(storageRef);
       }
-      const JewelryPayload = {
-        ...createJewelryDto,
-        image: ImageURL,
-      };
 
       if (
         await this.JewelryRepository.exists({
@@ -60,25 +66,45 @@ export class JewelryService {
         );
       }
 
-      const New_Jewelry = this.JewelryRepository.create(JewelryPayload);
-      await this.JewelryRepository.save(New_Jewelry);
-
-      return New_Jewelry;
+      if (ImageURL != null) {
+        const New_Jewelry = this.JewelryRepository.create({
+          ...createJewelryDto,
+          image: ImageURL,
+        });
+        await this.JewelryRepository.save(New_Jewelry);
+        return New_Jewelry;
+      }
     } catch (error) {
-      console.log('Erro =>', error);
+      throw new HttpException(error.message, error.status);
+    }
+  }
+  async FindAllJewelry() {
+    try {
+      const findAll = await this.JewelryRepository.find();
 
+      if (findAll.length > 0) {
+        return findAll;
+      } else {
+        throw new NotFoundException(`There are no registered jewels`);
+      }
+    } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
-  async FindAllJewelry() {
-    return await this.JewelryRepository.find();
-  }
-
   async findOne(id: number) {
-    return await this.JewelryRepository.findOne({
-      where: { id },
-    });
+    try {
+      const FindJewelry = await this.JewelryRepository.findOne({
+        where: { id },
+      });
+      if (FindJewelry) {
+        return FindJewelry;
+      } else {
+        throw new NotFoundException(`Jewel with ID ${id} not found`);
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 
   async GiveJewelryToUser(userId: number, jewelryId: number) {
@@ -88,39 +114,48 @@ export class JewelryService {
         where: { id: userId },
         relations: ['jewelries'],
       });
+
       const jewelry = await this.JewelryRepository.findOne({
         where: { id: jewelryId },
       });
-
-      console.log('user encontrada', user);
-      console.log('joia encontrada', jewelry);
-
       if (!user || !jewelry) {
         throw new NotFoundException('User or jewel not found.');
       }
 
-      // Verificar se user.jewelries é um array
-      if (!Array.isArray(user.jewelries)) {
-        // Se não for um array (pode ser undefined), inicialize como uma array vazia
-        user.jewelries = [];
+      if (user && jewelry) {
+        //some é usado para verificar se pelo menos um item no
+        //array user.jewelries possui o mesmo tipo que a joia sendo
+        //enviada (jewelry.type). Se hasSameType for true, isso significa
+        //que o usuário já possui uma joia com o mesmo tipo;
+        const hasSameType = user.jewelries.some(
+          (item) => item.type === jewelry.type,
+        );
+
+        if (hasSameType) {
+          user.credits++;
+          await this.userRepository.save(user);
+
+          return {
+            Sucess: `Credits successfully assigned to user`,
+          };
+        } else {
+          user.credits++;
+          user.jewelries.push(jewelry);
+
+          // Salvar as alterações no banco de dados
+          await this.userRepository.save(user);
+
+          return {
+            Sucess: `Jewel "${jewelry.type}" and credits successfully assigned to the user`,
+          };
+        }
       }
-
-      // Adicionar a nova joia ao array sem substituir as existentes
-      user.jewelries.push(jewelry);
-
-      // Salvar as alterações no banco de dados
-      await this.userRepository.save(user);
-
-      return {
-        Sucess: `Jewel id ${jewelry.id} (${jewelry.type}) successfully assigned to the user`,
-      };
     } catch (error) {
-      console.error(error);
       throw new HttpException(error.message, error.status);
     }
   }
 
-  async update(id: number, UpdateJewelryDto: UpdateJewelryDto) {
+  async Update(id: number, UpdateJewelry: UpdateJewelryDto) {
     try {
       const Verify_Jewelry = await this.JewelryRepository.findOne({
         where: { id },
@@ -131,7 +166,7 @@ export class JewelryService {
       }
 
       // Atualizando a joia
-      await this.JewelryRepository.update(id, UpdateJewelryDto);
+      await this.JewelryRepository.update(id, UpdateJewelry);
 
       // busca novamente depois da atualização
       const updatedJewelry = await this.JewelryRepository.findOne({
@@ -140,12 +175,24 @@ export class JewelryService {
 
       return updatedJewelry;
     } catch (error) {
-      console.error(error);
       throw new HttpException(error.message, error.status);
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} jewelry`;
+  async Remove(id: number) {
+    try {
+      const VerifyProduct = await this.JewelryRepository.findOne({
+        where: { id },
+      });
+
+      if (VerifyProduct) {
+        await this.JewelryRepository.softDelete(id);
+        return { result: `Jewelry with id ${id} has been remove.` };
+      } else {
+        throw new NotFoundException(`Jewelry with ID ${id} not found`);
+      }
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 }

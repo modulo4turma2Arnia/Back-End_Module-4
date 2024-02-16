@@ -10,23 +10,37 @@ import {
   UseGuards,
   UploadedFile,
   UseInterceptors,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { RolesGuards } from 'src/auth/guards/role-guard';
+import { RolesGuards } from '../auth/guards/role-guard';
 import { AuthGuard } from '../auth/guards/auth-guard';
-import { Roles } from 'src/auth/decorators/roles';
-import { RoleEnum } from 'src/enums/role.enum';
-import { FileDTO } from 'src/auth/dto/files.dto';
+import { Roles } from '../auth/decorators/roles';
+import { RoleEnum } from '../enums/role.enum';
+import { FileDTO } from '../auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateProductDoc } from './docs/create-product.doc';
+import { CreatedProductDoc } from './docs/created-product.doc';
+import { DeleteProductResponseDoc } from './docs/delete-product-response.doc';
 
+@ApiTags('Products')
+@ApiBearerAuth()
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiBody({
+    type: CreateProductDoc,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: CreatedProductDoc,
+  })
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
@@ -37,6 +51,11 @@ export class ProductsController {
   }
 
   @UseGuards(AuthGuard, RolesGuards)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: CreatedProductDoc,
+    isArray: true,
+  })
   @Get()
   findAll(
     @Query('page') page?: number,
@@ -47,9 +66,12 @@ export class ProductsController {
     return this.productsService.FindAll(page, limit, name, price);
   }
 
+  @ApiResponse({
+    type: CreatedProductDoc,
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+    return this.productsService.FindOne(+id);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
@@ -59,6 +81,10 @@ export class ProductsController {
     return this.productsService.UpdateProduct(+id, updateProductDto);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: DeleteProductResponseDoc,
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.RemoveProduct(+id);
