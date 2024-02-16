@@ -55,11 +55,12 @@ export class JewelryController {
   }
 
   @UseGuards(AuthGuard, RolesGuards)
+  @Roles(RoleEnum.admin)
   @ApiResponse({
+    status: HttpStatus.OK,
     type: CreatedJewelryDoc,
     isArray: true,
   })
-  @Roles(RoleEnum.admin)
   @Get()
   findAll() {
     return this.jewelryService.FindAllJewelry();

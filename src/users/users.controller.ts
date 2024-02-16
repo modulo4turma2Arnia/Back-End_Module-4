@@ -46,6 +46,7 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
   @ApiResponse({
+    status: HttpStatus.OK,
     type: CreatedUserDoc,
     isArray: true,
   })
@@ -57,16 +58,15 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
   @ApiResponse({
+    status: HttpStatus.OK,
     type: CreatedUserDoc,
   })
   @Get(':id')
-  @ApiResponse({ status: 200, description: 'Retorna um usuário pelo ID' })
   findOne(@Param('id') id: string) {
     return this.usersService.FindOne(+id);
   }
 
   @UseGuards(AuthGuard, RolesGuards)
-  
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
@@ -87,6 +87,10 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: CreatedUserDoc,
+  })
   @Post('rescue/:productId')
   async rescueProduct(
     @Param('productId') productId: string,

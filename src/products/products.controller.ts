@@ -52,6 +52,7 @@ export class ProductsController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @ApiResponse({
+    status: HttpStatus.OK,
     type: CreatedProductDoc,
     isArray: true,
   })
