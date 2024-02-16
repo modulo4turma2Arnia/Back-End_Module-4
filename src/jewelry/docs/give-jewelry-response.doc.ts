@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GiveJewelryDocResponseDoc {
+export class GiveJewelryResponseDoc {
   @ApiProperty({
     type: String,
     description: 'Response for jewels awarded successfully.',

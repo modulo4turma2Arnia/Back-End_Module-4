@@ -27,9 +27,8 @@ import { CreatedJewelryDoc } from './docs/created-jewelry.doc';
 import { GiveJewelryDoc } from './docs/give-jewelry.doc';
 import { UpdateJewelryDoc } from './docs/update-jewelry.doc';
 import { DeleteJewelryResponseDoc } from './docs/delete-jewelry-response.doc';
-import { CreatedUserDoc } from 'src/auth/docs/created-user.doc';
-import { GiveJewelryDocResponseDoc } from './docs/give-jewelry-response.doc';
 import { UpdatedJewelryDoc } from './docs/updated-jewelry.doc ';
+import { GiveJewelryResponseDoc } from './docs/give-jewelry-response.doc';
 
 @ApiTags('Jewelry')
 @ApiBearerAuth()
@@ -73,7 +72,7 @@ export class JewelryController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: GiveJewelryDocResponseDoc,
+    type: GiveJewelryResponseDoc,
   })
   @Post(':userId/:jewelryId')
   GiveJewelry(

@@ -30,7 +30,7 @@ export class ProductsService {
 
   async CreateProduct(createProductPayload: CreateProductDto, photo: FileDTO) {
     let ImageURL: string | null = null;
-    const { name } = createProductPayload;
+
     try {
       if (
         await this.ProductRepository.exists({
@@ -95,17 +95,21 @@ export class ProductsService {
         });
       }
 
+      // // modo antigo com tolerancia
+      // if (price) {
+      //   // a pesquisa deve ser feita com valores proximos tambem? perguntar o luiz
+      //   // Utiliza operadores >= e <= para buscar valores próximos
+      //   const tolerance = 1; // Ajuste conforme necessário
+      //   queryBuilder = queryBuilder
+      //     .andWhere('product.price >= :minPrice', { minPrice: price - tolerance })
+      //     .andWhere('product.price <= :maxPrice', {
+      //       maxPrice: price + tolerance,
+      //     });
+      // }
       if (price) {
-        // a pesquisa deve ser feita com valores proximos tambem? perguntar o luiz
-        // Utiliza operadores >= e <= para buscar valores próximos
-        const tolerance = 5; // Ajuste conforme necessário
-        queryBuilder = queryBuilder
-          .andWhere('product.price >= :minPrice', {
-            minPrice: price - tolerance,
-          })
-          .andWhere('product.price <= :maxPrice', {
-            maxPrice: price + tolerance,
-          });
+        queryBuilder = queryBuilder.andWhere('product.price = :price', {
+          price,
+        });
       }
 
       // Aplicando a paginação com os filtros recebidos e retorna os resultados
