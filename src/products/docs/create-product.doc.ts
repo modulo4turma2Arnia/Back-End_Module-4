@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FileDoc } from 'src/auth/docs/file.doc';
 
 export class CreateProductDoc {
   @ApiProperty({
@@ -25,4 +26,11 @@ export class CreateProductDoc {
     required: true,
   })
   price: number;
+
+  @ApiProperty({
+    type: FileDoc,
+    description: 'Upload image product.',
+    required: true,
+  })
+  image: FileDoc;
 }

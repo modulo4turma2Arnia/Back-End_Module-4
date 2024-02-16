@@ -24,5 +24,5 @@ export class CreateJewelryDoc {
     description: 'Upload image jewelry.',
     required: true,
   })
-  profileImage: FileDoc;
+  image: FileDoc;
 }

@@ -26,6 +26,8 @@ import { GetLogedUserDoc } from './docs/get-loged-user.doc';
 import { UpdateUserPasswordDoc } from './docs/update-user.password.doc';
 import { UpdateUserPasswordResponseDoc } from './docs/update-user.password.response.doc';
 import { RescueProductsDoc } from './docs/rescue-products.doc';
+import { UpdateUserDoc } from './docs/update-user..doc';
+import { UpdatedUserDoc } from './docs/updated-user.doc';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -69,6 +71,13 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
+  @ApiBody({
+    type: UpdateUserDoc,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: UpdatedUserDoc,
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserPayload: UpdateUserDto) {
     return this.usersService.UpdateUser(+id, updateUserPayload);

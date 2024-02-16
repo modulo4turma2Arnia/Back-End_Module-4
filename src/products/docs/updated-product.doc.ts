@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreatedProductDoc {
+export class UpdatedProductDoc {
   @ApiProperty({
     type: String,
-    description: 'Name of the product.',
-    example: 'Mochila Executiva para Notebook',
+    description: 'New product name.',
+    example: 'Mochila para Notebook',
     required: true,
   })
   name: string;
@@ -58,7 +58,8 @@ export class CreatedProductDoc {
   @ApiProperty({
     type: Date,
     description: 'When an product was deleted.',
-    example: 'null',
+    example: ' null',
   })
   deletedAt: Date;
 }
+
