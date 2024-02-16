@@ -1,5 +1,4 @@
-import { ProductsService } from "../../products/products.service";
-
+import { ProductsService } from '../../products/products.service';
 
 export const ProductServiceMock = {
   provide: ProductsService,

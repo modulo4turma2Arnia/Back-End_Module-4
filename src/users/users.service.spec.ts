@@ -10,9 +10,7 @@ import {
   UserRepositoryMock,
 } from '../testing/index';
 import { HttpException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt'
-
-
+import * as bcrypt from 'bcrypt';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -146,61 +144,84 @@ describe('UsersService', () => {
         credits: 1000,
         products: [{ type: ListProductsMock[0] }],
       };
-      jest.spyOn(UserRepositoryMock.useValue, 'findOne').mockResolvedValue(UserWithInfo as never);
+      jest
+        .spyOn(UserRepositoryMock.useValue, 'findOne')
+        .mockResolvedValue(UserWithInfo as never);
 
-      const result = await service.RescueProduct( ListProductsMock[0].id ,ListUsersMock[0].id)
+      const result = await service.RescueProduct(
+        ListProductsMock[0].id,
+        ListUsersMock[0].id,
+      );
 
       expect(result).toEqual(UserWithInfo);
-    })
+    });
 
     it("Should return a message when the user doesn't have enough credits", async () => {
       const UserWithInfo = {
         ...ListUsersMock[0],
         credits: 0,
-       };
-      jest.spyOn(UserRepositoryMock.useValue, 'findOne').mockResolvedValue(UserWithInfo as never);
+      };
+      jest
+        .spyOn(UserRepositoryMock.useValue, 'findOne')
+        .mockResolvedValue(UserWithInfo as never);
 
-      const result = service.RescueProduct(ListProductsMock[0].id ,ListUsersMock[0].id)
+      const result = service.RescueProduct(
+        ListProductsMock[0].id,
+        ListUsersMock[0].id,
+      );
 
       expect(result).rejects.toThrow(HttpException);
-    })
+    });
 
     it("Should return an error when it can't find the user or product", async () => {
-      jest.spyOn(UserRepositoryMock.useValue, 'findOne').mockResolvedValue(null as never);
+      jest
+        .spyOn(UserRepositoryMock.useValue, 'findOne')
+        .mockResolvedValue(null as never);
 
-      const result = service.RescueProduct(ListProductsMock[0].id ,ListUsersMock[0].id)
+      const result = service.RescueProduct(
+        ListProductsMock[0].id,
+        ListUsersMock[0].id,
+      );
 
       expect(result).rejects.toThrow(HttpException);
-    })
+    });
+  });
 
-
-  })
-
-  describe("Change Password", () => {
+  describe('Change Password', () => {
     it("should be possible to change the user's password if the password meets the requirements.", async () => {
-  
       const NewPassWord = {
         newPassword: 'senha1234',
         currentPassword: 'senhaantiga',
-        id: ListUsersMock[0].id
-      }
-  
+        id: ListUsersMock[0].id,
+      };
+
       const mockedUser = { id: ListUsersMock[0].id, password: 'senhaantiga' };
-  
-      jest.spyOn(UserRepositoryMock.useValue, 'findOne').mockResolvedValue(mockedUser as never);
-      jest.spyOn(bcrypt, 'compare').mockImplementation((password: string, hashedPassword: string) => {
-        if (password === 'senhaantiga' && hashedPassword === mockedUser.password) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedNewPassword' as never);
-  
-      const result = await service.changePassword(ListUsersMock[0].id, NewPassWord);
-  
+
+      jest
+        .spyOn(UserRepositoryMock.useValue, 'findOne')
+        .mockResolvedValue(mockedUser as never);
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation((password: string, hashedPassword: string) => {
+          if (
+            password === 'senhaantiga' &&
+            hashedPassword === mockedUser.password
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      jest
+        .spyOn(bcrypt, 'hash')
+        .mockResolvedValue('hashedNewPassword' as never);
+
+      const result = await service.changePassword(
+        ListUsersMock[0].id,
+        NewPassWord,
+      );
+
       expect(result).toEqual({ Result: 'User Password changed succefully' });
     });
   });
-  
 });

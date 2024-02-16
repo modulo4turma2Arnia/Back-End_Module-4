@@ -10,6 +10,7 @@ import {
   UseGuards,
   UploadedFile,
   UseInterceptors,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -20,13 +21,28 @@ import { Roles } from '../auth/decorators/roles';
 import { RoleEnum } from '../enums/role.enum';
 import { FileDTO } from '../auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateProductDoc } from './docs/create-product.doc';
+import { CreatedProductDoc } from './docs/created-product.doc';
+import { DeleteProductResponseDoc } from './docs/delete-product-response.doc';
+import { UpdateProductDoc } from './docs/update-product.doc';
+import { UpdatedProductDoc } from './docs/updated-product.doc';
 
+@ApiTags('Products')
+@ApiBearerAuth()
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiBody({
+    type: CreateProductDoc,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: CreatedProductDoc,
+  })
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
@@ -37,6 +53,11 @@ export class ProductsController {
   }
 
   @UseGuards(AuthGuard, RolesGuards)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: CreatedProductDoc,
+    isArray: true,
+  })
   @Get()
   findAll(
     @Query('page') page?: number,
@@ -47,6 +68,10 @@ export class ProductsController {
     return this.productsService.FindAll(page, limit, name, price);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: CreatedProductDoc,
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.FindOne(+id);
@@ -54,11 +79,22 @@ export class ProductsController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiBody({
+    type: UpdateProductDoc,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: UpdatedProductDoc,
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.UpdateProduct(+id, updateProductDto);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: DeleteProductResponseDoc,
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.RemoveProduct(+id);

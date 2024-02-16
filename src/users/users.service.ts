@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   HttpException,
-  BadRequestException,
   HttpStatus,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,7 +11,6 @@ import { Repository } from 'typeorm';
 import { ChangePasswordDto } from './dto/update-user.password.dto';
 import * as bcrypt from 'bcrypt';
 
-
 // testando uma nova execeção personalizada
 export class InsufficientCreditsException extends HttpException {
   constructor() {
@@ -20,60 +18,58 @@ export class InsufficientCreditsException extends HttpException {
   }
 }
 
-
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private UserRepository: Repository<UserEntity>,
     @InjectRepository(ProductEntity)
-    private productRepository: Repository<ProductEntity>,
+    private ProductRepository: Repository<ProductEntity>,
   ) {}
 
   async FindAllUsers() {
     try {
       const FindAllUsers = await this.UserRepository.find();
-      if(FindAllUsers.length > 0){
-          return FindAllUsers;
+      if (FindAllUsers.length > 0) {
+        return FindAllUsers;
       } else {
-        throw new NotFoundException('There are no registered Users')
+        throw new NotFoundException('There are no registered Users');
       }
     } catch (error) {
-      throw new HttpException(error.message, error.status)
+      throw new HttpException(error.message, error.status);
     }
   }
 
   async FindOne(id: number) {
     try {
       const UserFound = await this.UserRepository.findOne({
-        where: { id }
+        where: { id },
       });
 
-      if(UserFound){
-          return UserFound;
+      if (UserFound) {
+        return UserFound;
       } else {
-        throw new NotFoundException(`There no are registered user with ${id}.`)
+        throw new NotFoundException(`There no are registered user with ${id}.`);
       }
     } catch (error) {
-      throw new HttpException(error.message, error.status)
+      throw new HttpException(error.message, error.status);
     }
-
   }
 
   async GetInfoUsers(id: number) {
     try {
-    const Getinfo = await this.UserRepository.findOne({
+      const Getinfo = await this.UserRepository.findOne({
         where: { id },
         relations: { products: true, jewelries: true },
       });
 
-      if(Getinfo){
+      if (Getinfo) {
         return Getinfo;
       } else {
-        throw new NotFoundException(`There no user with ${id} registered.`)
+        throw new NotFoundException(`There no user with ${id} registered.`);
       }
     } catch (error) {
-    throw new HttpException(error.message, error.status) 
+      throw new HttpException(error.message, error.status);
     }
   }
 
@@ -115,17 +111,18 @@ export class UsersService {
 
   async RescueProduct(productId: number, UserId: number) {
     try {
-
-      // procurando produto por id 
-      const ProductFound = await this.productRepository.findOne({ where: { id: productId } });
-     // procurando user por id 
-      const UserFound = await this.UserRepository.findOne({ where: { id: UserId },
+      // procurando produto por id
+      const ProductFound = await this.ProductRepository.findOne({
+        where: { id: productId },
+      });
+      // procurando user por id
+      const UserFound = await this.UserRepository.findOne({
+        where: { id: UserId },
         relations: { products: true },
       });
-      
+
       // se usuario foi encontrado ee se o credito dele for mairo que o preço do produto
       if (UserFound && UserFound.credits > ProductFound.price) {
-        
         // Deduzir créditos do usuário
         UserFound.credits -= ProductFound.price;
 
@@ -134,26 +131,25 @@ export class UsersService {
 
         // Salvar usuário atualizado
         await this.UserRepository.save(UserFound);
-        
+
         // Recuperar o usuário atualizado
-        const UserUpdated = await this.UserRepository.findOne({ where: { id: UserId },
+        const UserUpdated = await this.UserRepository.findOne({
+          where: { id: UserId },
           relations: { products: true },
-        })
+        });
 
         return UserUpdated;
-      } else if (!ProductFound || !UserFound){
-        throw new NotFoundException('User or product not found')
-      }
-      else {
+      } else if (!ProductFound || !UserFound) {
+        throw new NotFoundException('User or product not found');
+      } else {
         throw new InsufficientCreditsException();
       }
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
-  
 
-  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+  async ChangePassword(userId: number, changePasswordDto: ChangePasswordDto) {
     try {
       const user = await this.UserRepository.findOne({
         where: { id: userId },

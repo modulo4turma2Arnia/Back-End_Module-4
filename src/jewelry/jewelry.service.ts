@@ -81,7 +81,7 @@ export class JewelryService {
   async FindAllJewelry() {
     try {
       const findAll = await this.JewelryRepository.find();
-  
+
       if (findAll.length > 0) {
         return findAll;
       } else {
@@ -91,14 +91,13 @@ export class JewelryService {
       throw new HttpException(error.message, error.status);
     }
   }
-  
 
   async findOne(id: number) {
     try {
       const FindJewelry = await this.JewelryRepository.findOne({
-        where: { id }
+        where: { id },
       });
-      if(FindJewelry){
+      if (FindJewelry) {
         return FindJewelry;
       } else {
         throw new NotFoundException(`Jewel with ID ${id} not found`);
@@ -106,7 +105,6 @@ export class JewelryService {
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
-
   }
 
   async GiveJewelryToUser(userId: number, jewelryId: number) {
@@ -125,7 +123,6 @@ export class JewelryService {
       }
 
       if (user && jewelry) {
-
         //some é usado para verificar se pelo menos um item no
         //array user.jewelries possui o mesmo tipo que a joia sendo
         //enviada (jewelry.type). Se hasSameType for true, isso significa
@@ -140,7 +137,7 @@ export class JewelryService {
 
           return {
             Sucess: `Credits successfully assigned to user`,
-          }
+          };
         } else {
           user.credits++;
           user.jewelries.push(jewelry);
@@ -149,7 +146,7 @@ export class JewelryService {
           await this.userRepository.save(user);
 
           return {
-            Sucess: `Jewel "${jewelry.id}" and credits successfully assigned to the user`,
+            Sucess: `Jewel "${jewelry.type}" and credits successfully assigned to the user`,
           };
         }
       }
@@ -197,5 +194,5 @@ export class JewelryService {
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
-  }  
+  }
 }

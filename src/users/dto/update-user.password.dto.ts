@@ -1,9 +1,8 @@
-import { IsString, IsNotEmpty, MinLength, NotEquals } from 'class-validator';
+import { IsString, IsNotEmpty, NotEquals } from 'class-validator';
 
 export class ChangePasswordDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
   @NotEquals('currentPassword', {
     message: 'New password must be different from the current password',
   })
@@ -11,7 +10,5 @@ export class ChangePasswordDto {
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
   currentPassword: string;
-  id: number;
 }

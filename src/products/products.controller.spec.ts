@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsController } from './products.controller';
-import { ProductsService } from './products.service';
-import { JwtServiceMock, ProductServiceMock, authGuardMock } from '../testing/index';
+//import { ProductsService } from './products.service';
+import {
+  JwtServiceMock,
+  ProductServiceMock,
+  authGuardMock,
+} from '../testing/index';
 import { AuthGuard } from '../auth/guards/auth-guard';
 
 describe('ProductsController', () => {
@@ -11,10 +15,10 @@ describe('ProductsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ProductsController],
       providers: [ProductServiceMock, JwtServiceMock],
-    }).overrideGuard(AuthGuard)
-    .useValue(authGuardMock) 
-    .compile();
-
+    })
+      .overrideGuard(AuthGuard)
+      .useValue(authGuardMock)
+      .compile();
 
     controller = module.get<ProductsController>(ProductsController);
   });
