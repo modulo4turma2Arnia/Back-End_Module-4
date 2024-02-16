@@ -25,6 +25,7 @@ import { CreatedUserDoc } from 'src/auth/docs/created-user.doc';
 import { GetLogedUserDoc } from './docs/get-loged-user.doc';
 import { UpdateUserPasswordDoc } from './docs/update-user.password.doc';
 import { UpdateUserPasswordResponseDoc } from './docs/update-user.password.response.doc';
+import { RescueProductsDoc } from './docs/rescue-products.doc';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -89,7 +90,7 @@ export class UsersController {
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @ApiResponse({
     status: HttpStatus.OK,
-    type: CreatedUserDoc,
+    type: RescueProductsDoc,
   })
   @Post('rescue/:productId')
   async rescueProduct(
