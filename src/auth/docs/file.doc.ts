@@ -3,13 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 export class FileDoc {
   @ApiProperty({
     description: 'Name of the file field',
-    example: 'profileImage',
+    example: 'image',
   })
   fieldname: string;
 
   @ApiProperty({
     description: 'Original name of the file',
-    example: 'profile.jpg',
+    example: 'image.jpg',
   })
   originalname: string;
 

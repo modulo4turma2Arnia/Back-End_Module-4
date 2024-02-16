@@ -48,10 +48,10 @@ export class CreatedJewelryDoc extends CreateJewelryDoc {
   })
   updatedAt: Date;
 
-  // @ApiProperty({
-  //   type: Date,
-  //   description: 'When an jewelry was deleted.',
-  //   example: ' 2024-02-14 14:16:32.594761',
-  // })
-  // deletedAt: Date;
+  @ApiProperty({
+    type: Date,
+    description: 'When an jewelry was deleted.',
+    example: 'null',
+  })
+  deletedAt: Date;
 }

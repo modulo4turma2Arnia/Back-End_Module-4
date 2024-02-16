@@ -25,6 +25,8 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateProductDoc } from './docs/create-product.doc';
 import { CreatedProductDoc } from './docs/created-product.doc';
 import { DeleteProductResponseDoc } from './docs/delete-product-response.doc';
+import { UpdateProductDoc } from './docs/update-product.doc';
+import { UpdatedProductDoc } from './docs/updated-product.doc';
 
 @ApiTags('Products')
 @ApiBearerAuth()
@@ -67,6 +69,7 @@ export class ProductsController {
   }
 
   @ApiResponse({
+    status: HttpStatus.OK,
     type: CreatedProductDoc,
   })
   @Get(':id')
@@ -76,6 +79,13 @@ export class ProductsController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiBody({
+    type: UpdateProductDoc,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: UpdatedProductDoc,
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.UpdateProduct(+id, updateProductDto);
