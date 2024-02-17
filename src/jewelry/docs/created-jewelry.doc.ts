@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateJewelryDoc } from './create-jewelry.doc';
 
-export class CreatedJewelryDoc extends CreateJewelryDoc {
+export class CreatedJewelryDoc {
   @ApiProperty({
     type: String,
     description: 'Type of jewelry.',
@@ -23,7 +22,7 @@ export class CreatedJewelryDoc extends CreateJewelryDoc {
     type: String,
     description: 'Link to the image hosted on Firebase',
     example:
-      'https://firebasestorage.googleapis.com/v0/b/modulo4-4f6b2.appspot.com/o/1707403167148.alma?alt=media&token=6619158c-c69f-46df-86db-a7125b739e83',
+      'https://firebasestorage.googleapis.com/v0/b/modulo4-4f6b2.appspot.com/o/1706915097376.airfrier?alt=media&token=a92c1548-bdb4-4a11-9791-c885cc71c4a8',
   })
   image: string;
 
