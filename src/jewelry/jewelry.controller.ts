@@ -107,6 +107,8 @@ export class JewelryController {
     return this.jewelryService.Update(+id, updateJewelryDto);
   }
 
+  @UseGuards(AuthGuard, RolesGuards)
+  @Roles(RoleEnum.admin, RoleEnum.customer)
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiResponse({
     status: HttpStatus.ACCEPTED,

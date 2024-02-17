@@ -1,8 +1,7 @@
 import {
-  //BeforeInsert,
   Column,
   CreateDateColumn,
-  //DeleteDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -34,4 +33,7 @@ export class JewelryEntity {
 
   @UpdateDateColumn({ type: 'date' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'date' })
+  deletedAt: Date;
 }
