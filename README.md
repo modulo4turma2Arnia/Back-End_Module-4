@@ -74,6 +74,18 @@ password: "senha1234"
 ### 🟢 POST v1/auth/register
 - **Descrição**: Cria um usuário no bando de dados(Necessita autenticação).
 - **Aviso**: A Imagem de perfil do usuário não é obrigatória. 
+- **Observação - em caso de craição de um admin, ele deve conter a propriedade role: admin**:
+```javascript
+{
+FirstName: "Fulano"
+LastName: "Beltrano"
+email: "beltrano@fulano.com.br"
+profileImage: "URL Da imagem enviada."
+role: "admin",
+password: "senha123"
+}
+```
+
 - **Corpo da Requisição**:
 ```javascript
 {

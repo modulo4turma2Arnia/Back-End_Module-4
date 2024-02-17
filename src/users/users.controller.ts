@@ -123,6 +123,6 @@ export class UsersController {
     @Body() NewPassWord: ChangePasswordDto,
     @CurrentUser() currentUser: UserEntity,
   ) {
-    return this.usersService.changePassword(currentUser.id, NewPassWord);
+    return this.usersService.ChangePassword(currentUser.id, NewPassWord);
   }
 }
