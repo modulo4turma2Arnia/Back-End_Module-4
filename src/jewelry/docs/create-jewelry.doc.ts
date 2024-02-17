@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FileDoc } from 'src/auth/docs/file.doc';
-
+// filedoc adicionado ao tipo pra remover o erro
 export class CreateJewelryDoc {
   @ApiProperty({
     type: String,
