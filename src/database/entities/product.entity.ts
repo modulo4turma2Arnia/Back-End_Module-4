@@ -28,7 +28,6 @@ export class ProductEntity {
   image: string;
 
   @ManyToMany(() => UserEntity, (user) => user.products)
-  @JoinTable()
   users: UserEntity[];
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
