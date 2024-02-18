@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CreateJewelryDoc } from './create-jewelry.doc';
 import { FileDoc } from 'src/auth/docs/file.doc';
 
-export class UpdatedJewelryDoc extends CreateJewelryDoc {
+export class UpdatedJewelryDoc {
   @ApiProperty({
     type: String,
     description: 'Type of jewelry.',
