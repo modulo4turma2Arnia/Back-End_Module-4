@@ -1,4 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateJewelryDoc } from './create-jewelry.doc';
+import { FileDoc } from 'src/auth/docs/file.doc';
+
 
 export class CreatedJewelryDoc {
   @ApiProperty({
@@ -24,7 +27,7 @@ export class CreatedJewelryDoc {
     example:
       'https://firebasestorage.googleapis.com/v0/b/modulo4-4f6b2.appspot.com/o/1706915097376.airfrier?alt=media&token=a92c1548-bdb4-4a11-9791-c885cc71c4a8',
   })
-  image: string;
+  image: FileDoc;
 
   @ApiProperty({
     type: Number,
