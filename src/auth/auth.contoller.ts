@@ -12,18 +12,31 @@ import { FileDTO } from './dto/files.dto';
 import { UserRegisterDto } from './dto/register.dto';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { LoginDoc } from './docs/login.doc';
 import { LoginResponseDoc } from './docs/loginResponse.doc';
 import { UserRegisterDoc } from './docs/register-user.doc';
 import { CreatedUserDoc } from './docs/created-user.doc';
+import { BadRequestCreateUserDoc } from './docs/bad-request-create-user.doc';
+import { UnauthorizedLoginDoc } from './docs/unauthorized-login.doc';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
   @ApiBody({
     type: UserRegisterDoc,
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    type: BadRequestCreateUserDoc,
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -40,6 +53,10 @@ export class AuthController {
 
   @ApiBody({
     type: LoginDoc,
+  })
+  @ApiUnauthorizedResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    type: UnauthorizedLoginDoc,
   })
   @ApiResponse({
     status: HttpStatus.OK,

@@ -21,12 +21,23 @@ import { Roles } from '../auth/decorators/roles';
 import { RoleEnum } from '../enums/role.enum';
 import { FileDTO } from '../auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateProductDoc } from './docs/create-product.doc';
 import { CreatedProductDoc } from './docs/created-product.doc';
 import { DeleteProductResponseDoc } from './docs/delete-product-response.doc';
 import { UpdateProductDoc } from './docs/update-product.doc';
 import { UpdatedProductDoc } from './docs/updated-product.doc';
+import { BadRequestCreateProductDoc } from './docs/bad-request-create-product.doc';
+import { NotFoundGetAllProductsDoc } from './docs/not-found-get-all-products.doc';
+import { NotFoundGetIdProductDoc } from './docs/not-found-get-id-product.doc';
+import { NotFoundUpdateProductDoc } from './docs/not-found-update-product.doc';
 
 @ApiTags('Products')
 @ApiBearerAuth()
@@ -38,6 +49,10 @@ export class ProductsController {
   @Roles(RoleEnum.admin)
   @ApiBody({
     type: CreateProductDoc,
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    type: BadRequestCreateProductDoc,
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -53,6 +68,10 @@ export class ProductsController {
   }
 
   @UseGuards(AuthGuard, RolesGuards)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetAllProductsDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: CreatedProductDoc,
@@ -67,7 +86,10 @@ export class ProductsController {
   ) {
     return this.productsService.FindAll(page, limit, name, price);
   }
-
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetIdProductDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: CreatedProductDoc,
@@ -79,6 +101,10 @@ export class ProductsController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundUpdateProductDoc,
+  })
   @ApiBody({
     type: UpdateProductDoc,
   })
@@ -91,6 +117,10 @@ export class ProductsController {
     return this.productsService.UpdateProduct(+id, updateProductDto);
   }
 
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetIdProductDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: DeleteProductResponseDoc,
