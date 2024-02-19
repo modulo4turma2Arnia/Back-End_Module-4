@@ -24,9 +24,9 @@ export class JewelryEntity {
   @Column({ type: 'varchar', length: 256, nullable: false })
   image: string;
 
-  @ManyToMany(() => UserEntity, (user) => user.products)
-  @JoinTable()
+  @ManyToMany(() => UserEntity, (user) => user.jewelries)
   users: UserEntity[];
+
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
