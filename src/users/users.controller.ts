@@ -19,7 +19,13 @@ import { Roles } from '../auth/decorators/roles';
 import { AuthGuard } from '../auth/guards/auth-guard';
 import { UserEntity } from '../database/entities/index';
 import { ChangePasswordDto } from './dto/update-user.password.dto';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { DeleteUserResponseDoc } from './docs/delete-user-response.doc';
 import { CreatedUserDoc } from 'src/auth/docs/created-user.doc';
 import { GetLogedUserDoc } from './docs/get-loged-user.doc';
@@ -28,6 +34,9 @@ import { UpdateUserPasswordResponseDoc } from './docs/update-user.password.respo
 import { RescueProductsDoc } from './docs/rescue-products.doc';
 import { UpdateUserDoc } from './docs/update-user..doc';
 import { UpdatedUserDoc } from './docs/updated-user.doc';
+import { NotFoundGetAllUsersDoc } from './docs/not-found-get-all-users.doc';
+import { NotFoundGetIdUsersDoc } from './docs/not-found-get-id-users.doc';
+import { NotFoundUpdateUserDoc } from './docs/not-found-update-user.doc';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -37,6 +46,10 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetAllUsersDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: GetLogedUserDoc,
@@ -48,6 +61,10 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetAllUsersDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: CreatedUserDoc,
@@ -60,6 +77,10 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetIdUsersDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: CreatedUserDoc,
@@ -74,6 +95,10 @@ export class UsersController {
   @ApiBody({
     type: UpdateUserDoc,
   })
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundUpdateUserDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: UpdatedUserDoc,
@@ -86,6 +111,10 @@ export class UsersController {
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @HttpCode(HttpStatus.ACCEPTED)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetIdUsersDoc,
+  })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
     type: DeleteUserResponseDoc,
@@ -97,6 +126,10 @@ export class UsersController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin, RoleEnum.customer)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetAllUsersDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: RescueProductsDoc,
@@ -113,6 +146,10 @@ export class UsersController {
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @ApiBody({
     type: UpdateUserPasswordDoc,
+  })
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetIdUsersDoc,
   })
   @ApiResponse({
     status: HttpStatus.OK,

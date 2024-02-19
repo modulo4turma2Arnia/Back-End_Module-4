@@ -21,7 +21,14 @@ import { RolesGuards } from '../auth/guards/role-guard';
 import { RoleEnum } from '../enums/role.enum';
 import { FileDTO } from '../auth/dto/files.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiBody,
+  ApiNotFoundResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateJewelryDoc } from './docs/create-jewelry.doc';
 import { CreatedJewelryDoc } from './docs/created-jewelry.doc';
 import { GiveJewelryDoc } from './docs/give-jewelry.doc';
@@ -29,6 +36,11 @@ import { UpdateJewelryDoc } from './docs/update-jewelry.doc';
 import { DeleteJewelryResponseDoc } from './docs/delete-jewelry-response.doc';
 import { UpdatedJewelryDoc } from './docs/updated-jewelry.doc ';
 import { GiveJewelryResponseDoc } from './docs/give-jewelry-response.doc';
+import { BadRequestCreateJewelryDoc } from './docs/bad-request-create-jewelry.doc';
+import { NotFoundGetIdJewelryDoc } from './docs/not-found-get-id-jewelry.doc';
+import { NotFoundGetAllJewelryDoc } from './docs/not-found-get-all-jewelry.doc';
+import { NotFoundGiveJewelryDoc } from './docs/not-founs-give-jewelry.doc';
+import { NotFoundUpdateJewelryDoc } from './docs/not-found-update-jewelry.doc';
 
 @ApiTags('Jewelry')
 @ApiBearerAuth()
@@ -40,6 +52,10 @@ export class JewelryController {
   @Roles(RoleEnum.admin)
   @ApiBody({
     type: CreateJewelryDoc,
+  })
+  @ApiBadRequestResponse({
+    status: HttpStatus.BAD_REQUEST,
+    type: BadRequestCreateJewelryDoc,
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -56,6 +72,10 @@ export class JewelryController {
 
   @UseGuards(AuthGuard, RolesGuards)
   @Roles(RoleEnum.admin)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetAllJewelryDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: CreatedJewelryDoc,
@@ -71,6 +91,10 @@ export class JewelryController {
   @ApiBody({
     type: GiveJewelryDoc,
   })
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGiveJewelryDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: GiveJewelryResponseDoc,
@@ -84,6 +108,10 @@ export class JewelryController {
   }
 
   @UseGuards(AuthGuard, RolesGuards)
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundGetIdJewelryDoc,
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     type: CreatedJewelryDoc,
@@ -97,6 +125,10 @@ export class JewelryController {
   @Roles(RoleEnum.admin)
   @ApiBody({
     type: UpdateJewelryDoc,
+  })
+  @ApiNotFoundResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundUpdateJewelryDoc,
   })
   @ApiResponse({
     status: HttpStatus.OK,
