@@ -124,7 +124,9 @@ export class UsersService {
       // se usuario foi encontrado ee se o credito dele for mairo que o preço do produto
       if (UserFound && UserFound.credits > ProductFound.price) {
         // Deduzir créditos do usuário
-        UserFound.credits - ProductFound.price;
+        // testando
+        
+        UserFound.credits -= ProductFound.price;
 
         // adicionando o produto ao array do usuario
         UserFound.products.push(ProductFound);
