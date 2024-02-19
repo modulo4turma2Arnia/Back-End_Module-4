@@ -37,6 +37,7 @@ import { UpdatedUserDoc } from './docs/updated-user.doc';
 import { NotFoundGetAllUsersDoc } from './docs/not-found-get-all-users.doc';
 import { NotFoundGetIdUsersDoc } from './docs/not-found-get-id-users.doc';
 import { NotFoundUpdateUserDoc } from './docs/not-found-update-user.doc';
+import { NotFoundGetInfoUsersDoc } from './docs/not-found-get-info-users.doc';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -48,7 +49,7 @@ export class UsersController {
   @Roles(RoleEnum.admin, RoleEnum.customer)
   @ApiNotFoundResponse({
     status: HttpStatus.NOT_FOUND,
-    type: NotFoundGetAllUsersDoc,
+    type: NotFoundGetInfoUsersDoc,
   })
   @ApiResponse({
     status: HttpStatus.OK,

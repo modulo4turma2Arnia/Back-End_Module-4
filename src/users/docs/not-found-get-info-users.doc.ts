@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class NotFoundGetAllUsersDoc {
+export class NotFoundGetInfoUsersDoc {
   @ApiProperty({
     type: String,
     description: 'wrong end point',
-    example: 'Cannot GET /v1/user',
+    example: 'Cannot GET /v1/productCannot GET /v1/user/infouser',
   })
   message: string;
 
