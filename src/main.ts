@@ -10,6 +10,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  app.setGlobalPrefix('v1/');
+
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Culture Power')
     .setDescription('Project created for the last module of the course.')
@@ -21,7 +23,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   // Verificar com professores se é obrigatório
-  app.setGlobalPrefix('v1/');
   app.enableCors();
   await app.listen(+configService.get('APP_PORT') || 3000);
 }
