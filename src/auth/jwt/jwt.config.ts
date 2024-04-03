@@ -14,7 +14,7 @@ export const jwtOptions: JwtModuleAsyncOptions = {
     secret: configService.get('JWT_SECRET_KEY'),
     // opções, definindo tempo que foi feito no .env
     signOptions: {
-      expiresIn: configService.get('JWT_EXPIRATION'),
+      expiresIn: configService.get("JWT_EXPIRATION")
     },
   }),
 };
