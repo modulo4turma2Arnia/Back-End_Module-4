@@ -54,6 +54,9 @@ export class UserEntity {
   @JoinTable()
   jewelries: JewelryEntity[];
 
+  @Column('text', { array: true, default: [] }) 
+  history: string[];
+
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

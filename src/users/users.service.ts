@@ -127,7 +127,7 @@ export class UsersService {
         // testando
         
         UserFound.credits -= ProductFound.price;
-
+        UserFound.history.push(ProductFound.name, ProductFound.image)
         // adicionando o produto ao array do usuario
         UserFound.products.push(ProductFound);
 
